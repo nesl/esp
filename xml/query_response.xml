@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="espml.xsd">
+
+ <system>
+ <id>http://www.schmidi.com</id>
+   <field>
+    <id>1</id>
+    <location>
+        <polygon>
+            <poslist>36.2,24.2,0.0 36.2,24.2,0.0</poslist>
+        </polygon>
+    </location>
+    <description>This is the first test field</description>
+    <function name="add">
+        <description>This is the first test field</description>
+        <parameter name="firstVal">
+            <description>This is the first test field</description>
+            <value>1</value>
+        </parameter>
+        <parameter name="secondVal">
+            <description>This is the first test field</description>
+            <value>2</value>
+        </parameter>
+    </function>
+    <platform>
+        <id>1</id>
+        <location>
+            <point>
+                <pos>36.3,24.3,0.0</pos>
+            </point>
+        </location>
+        <description>Test Platform MicaSchmidi</description>
+        <function name="sub">
+            <description>This is the first test field</description>
+            <parameter name="firstVal">
+                <description>This is the first test field</description>
+                <value>1</value>
+            </parameter>
+        </function>
+        <function name="min">
+            <description>This is the first test field</description>
+            <parameter name="firstVal">
+                <description>This is the first test field</description>
+                <value>1</value>
+            </parameter>
+        </function>
+        <sensor>
+            <id>1</id>
+            <location>
+                <point>
+                    <pos>36.3,24.3,0.0</pos>
+                </point>
+            </location>
+            <description>Put link to datasheet here.</description>
+            <function name="mean">
+                <description>This is the first test field</description>
+            </function>
+            <type>Temperature</type>
+        </sensor>
+    </platform>
+</field>
+</system>
+
+ <system>
+ <id>http://www.sasank.com</id>
+   <field>
+    <id>1</id>
+    <location>
+        <point>
+            <pos>36.2,24.2,0.0</pos>
+        </point>
+    </location>
+    <description>This is a small test field of SOS nodes.</description>
+    <function name="getCurrent">
+        <description>This is the first test field</description>
+    </function>
+    <function name="average">
+        <description>This is the first test field</description>
+    </function>
+    <platform>
+        <id>1</id>
+        <location>
+            <point>
+                <pos>36.3,24.3,0.0</pos>
+            </point>
+        </location>
+        <description>MicaZ Basestation connected to the gateway.</description>
+    </platform>
+    <platform>
+        <id>185</id>
+        <location>
+            <point>
+                <pos>36.304,24.304,2.0</pos>
+            </point>
+        </location>
+        <description>MicaZ node with Mica Sensor Board.</description>
+        <sensor>
+            <id>1</id>
+            <location>
+                <point>
+                    <pos>36.304,24.304,2.0</pos>
+                </point>
+            </location>
+            <description>PhotoSensor</description>
+            <function name="getCurrentValue">
+                <description>This is the first test field</description>
+            </function>
+            <function name="getAverageValue">
+                <description>This is the first test field</description>
+                <parameter name="numberElements">
+                    <description>This is the first test field</description>
+                    <value>1</value>
+                </parameter>
+            </function>
+            <function name="setSampleInterval">
+                <description>This is the first test field</description>
+                <parameter name="frequency">
+                    <description>This is the first test field</description>
+                    <value>1</value>
+                </parameter>
+            </function>
+            <type>Light</type>
+        </sensor>
+    </platform>
+    <platform>
+        <id>181</id>
+        <location>
+            <point>
+                <pos>36.308,24.308,5.0</pos>
+            </point>
+        </location>
+        <description>MicaZ node with Mica Sensor Board.</description>
+        <sensor>
+            <id>1</id>
+            <location>
+                <point>
+                    <pos>36.308,24.308,5.0</pos>
+                </point>
+            </location>
+            <description>PhotoSensor</description>
+            <function name="getCurrentValue">
+                <description>This is the first test field</description>
+            </function>
+            <function name="getAverageValue">
+                <description>This is the first test field</description>
+                <parameter name="numberElements">
+                    <description>This is the first test field</description>
+                    <value>1</value>
+                </parameter>
+            </function>
+            <function name="setSampleInterval">
+                <description>This is the first test field</description>
+                <parameter name="frequency">
+                    <description>This is the first test field</description>
+                    <value>2</value>
+                </parameter>
+            </function>
+            <type>Light</type>
+        </sensor>
+    </platform>
+</field>
+</system>
+
+ <system>
+ <id>http://www.google.com</id>
+   <field>
+    <id>1</id>
+    <location>
+        <point>
+            <pos>36.0,24.0,0.0</pos>
+        </point>
+    </location>
+    <description>This is the first test field</description>
+    <function name="minus">
+        <description>This is the first test field</description>
+        <parameter name="firstVal">
+            <description>This is the first test field</description>
+            <value>7</value>
+        </parameter>
+        <parameter name="secondVal">
+            <description>This is the first test field</description>
+            <value>9</value>
+        </parameter>
+    </function>
+    <platform>
+        <id>1</id>
+        <location>
+            <point>
+                <pos>36.0,24.0,0.0</pos>
+            </point>
+        </location>
+        <description>Test Platform MicaSchmidi</description>
+        <function name="sub">
+            <description>This is the first test field</description>
+            <parameter name="firstVal">
+                <description>This is the first test field</description>
+                <value>1</value>
+            </parameter>
+        </function>
+        <function name="min">
+            <description>This is the first test field</description>
+            <parameter name="firstVal">
+                <description>This is the first test field</description>
+                <value>1</value>
+            </parameter>
+        </function>
+        <sensor>
+            <id>1</id>
+            <location>
+                <point>
+                    <pos>36.0,24.0,0.0</pos>
+                </point>
+            </location>
+            <description>Put link to datasheet here.</description>
+            <function name="mean">
+                <description>This is the first test field</description>
+            </function>
+            <type>Temperature</type>
+        </sensor>
+    </platform>
+</field>
+</system>
+</query>

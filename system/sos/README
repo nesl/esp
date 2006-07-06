@@ -1,0 +1,15 @@
+We use the standard surge application from SOS. One node is programmed with the surge_base application and will be connected to the computer through a basestation. The other motes will run the surge_app and send photo sensors to the basestation.
+
+- Program the basestation mote with:
+	cd $SOS_DIR/config/surge_base
+	make micaz install ADDRESS=1 SOS_GROUP=1 PROG=mib510 PORT=/dev/ttyUSB0
+- Program the other motes with
+	cd $SOS_DIR/config/surge_app
+	make micaz install ADDRESS=2 SOS_GROUP=1 PROG=mib510 PORT=/dev/ttyUSB0
+
+
+You need to specify the two environment variables:
+SOS_DIR: points to the directory where sos-1.x resides
+NECLABROOT: $SOS_DIR/contrib/neclab
+Next, you need to edit the file $NECLABROOT/src/include/make/py_sos_defs.mk and make the changes to reflect your system configuration for python.
+

@@ -1,0 +1,66 @@
+<system>
+    <id>http://128.97.93.154:9281</id>
+    <field>
+        <id>1</id>
+        <location>
+            <point>
+                <pos>34.06862,-118.44338167,45</pos>
+            </point>
+        </location>
+        <description>NESL actuated camera</description>
+        <platform>
+            <id>1</id>
+            <location>
+                <point>
+                    <pos>34.06862,-118.44338167,45</pos>
+                </point>
+            </location>
+            <description>NESL actuated camera</description>
+            <sensor>
+                <id>1</id>
+                <location>
+                    <point>
+                        <pos>34.06862,-118.44338167,45</pos>
+                    </point>
+                </location>
+                <description>NESL actuated camera</description>
+                <function name="getPicture">
+		    <parameter name="panDegrees">
+		        <description>
+			Set the pan value of the camera in degrees. 0 degree is in front of the camera. Values range from -170 to 170.
+			</description>
+		    </parameter>
+		    <parameter name="tiltDegrees">
+		        <description>
+			Set the tilt of the camera. Values range from -20 to 90 degrees.
+			</description>
+		    </parameter>
+		    <parameter name="zoom">
+		        <description>
+			Set the zoom level of the camera. Values range from 0 to 100.
+			</description>
+		    </parameter>
+                </function>
+                <function name="getMovie">
+		    <parameter name="panDegrees">
+		        <description>
+			Set the pan value of the camera in degrees. 0 degree is in front of the camera. Values range from -170 to 170.
+			</description>
+		    </parameter>
+		    <parameter name="tiltDegrees">
+		        <description>
+			Set the tilt of the camera. Values range from -20 to 90 degrees.
+			</description>
+		    </parameter>
+		    <parameter name="zoom">
+		        <description>
+			Set the zoom level of the camera. Values range from 0 to 100.
+			</description>
+		    </parameter>
+                </function>
+                <type>camera</type>
+            </sensor>
+        </platform>
+    </field>
+</system>
+

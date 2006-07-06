@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../xml/espml.xsd">
+ <id>http://128.97.93.154:7081</id>
+ <field>
+  <id>1</id>
+  <location>
+   <point>
+    <pos>34.0888,-118.4305,0.00</pos>
+   </point>
+  </location>
+  <description>Upload and query system for Soundscape server.</description>
+  <function name="getSessionId">
+  <description>Returns a unique session id.</description>
+  </function>
+  <function name="uploadLocation">
+    <description>Upload a location for a session id.</description>
+    <parameter name="sessionId">
+      <description>Identifies the session to which the timestamp
+      should be added.</description>
+    </parameter>
+    <parameter name="timestamp">
+      <description>Represents the time when the location was recorded.</description>
+    </parameter>
+    <parameter name="location">
+      <description>Location string of the format "latitude,longitude,altitude"</description>
+    </parameter>
+  </function>
+  <function name="uploadMedia">
+    <description></description>
+    <parameter name="sessionId">
+      <description>Identifies the session to which the timestamp
+      should be added.</description>
+    </parameter>
+    <parameter name="timestamp">
+      <description>Represents the time when the location was recorded.</description>
+    </parameter>
+    <parameter name="mediaFile">
+      <description>Base64 encoded mediafile data.</description>
+    </parameter>
+  </function>
+ </field>
+</system>

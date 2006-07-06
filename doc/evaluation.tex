@@ -1,0 +1,54 @@
+\section{Evaluation} In order to evaluate the ESP framework, we created several systems that would be registered and also a geo-centric client that can actually query and interact with the
+example systems. The following section details the different types of systems implemented and also the architecture of the client.
+
+\subsection{Example Systems}
+One of the main goals of the ESP framework was to be able to represent several different types of networked systems.  Furthermore, we wanted to have a low development overhead to use the
+framework.  Currently, we provide a Python based system template that users can utilize to add their system in to the framework.  Essentially, a system would need an ESPml document describing its 
+capabilities and must modify the system template to add the proper hooks for the functions that are specified in the ESPml description.
+
+There are several systems that were added to the architecture to demonstrate its robustness.  The systems are shown visually as Figures \ref{fig:ui1}, \ref{fig:ui2}, and \ref{fig:ui3}.
+
+\begin{itemize}
+\item \textbf{Virtual Weather Stations}
+
+In order to demonstrate that the ESP framework can handle many systems in terms of quantity, we added virtual weather stations for every zip code for a particular region.  In this case, it is 
+for the state of California.  Essentially, a system for each zip code in the state was added to the registry with function capabilities to get the current weather information, a ten day forecast,
+and an hourly forecast.  The results of running these functions results in a URI that represents a web page that contains the actual information about the weather forecasts.
+
+\item \textbf{Community Web Cams}
+
+Another type of system that was added using the ESP framework are web cams that exist already for community monitoring.  Specifically, we implemented three web cams in the Los Angeles region that
+show pictures of UCLA, Santa Monica pier area, and Venice.  The systems have a function that gets the current picture of the region they are monitoring.
+
+\item \textbf{Actuated Network Camera}
+
+To demonstrate the ability to take parameters as part of a function call to a system, we implemented a Sony RZ30n network camera as a system.  Using the system, a user can set the pan, tilt, and
+zoom values and then obtain either a picture or a movie.
+
+\item \textbf{Photodiode Sensor Network}
+
+Another capability that the ESP framework enables is aggregation functions through the use of platforms or fields.  A photodiode sensor gateway that operates over five MicaZ motes
+is registered using the framework.  Not only can one get photodiode values from any of the individual motes, but one can also perform aggregation on the whole field to get an average value
+for the photodiode readings.  Furthermore, one can set the individual sampling rate for any of the photodiode sensors.
+
+\end{itemize}
+
+\subsection{Client Application}
+
+To interact with the ESP framework and also the systems that were implemented using the architecture, a geo-centric web client that relies on Google Maps was created.  Essentially, the 
+user has the ability to draw a polygon box over a certain area and then query for all the different networked systems in that space.  When the results come back from the registry, the networked
+systems in that area are represented as click-able point icons.  Different colors for the point icons represent the levels of abstraction for the systems.  For instance, fields are
+represented as purple icons, while platforms and individual sensors are green and yellow. Once a user clicks on the icons, a box layer pops up that shows a description of the
+entity that is being interrogated and then the user can interact with the component by clicking on buttons that represent function calls.  The results of the function call show up on a side
+frame.  Overall, the client application provides a visual interface that users can use to interact with the sensor systems that are currently registered.
+
+\subsection{Observations}
+
+Based on implementing the various example systems with the framework and creating the client application, several observations were made.  While evaluating the speed of queries, we realized
+that the database is a bottleneck.  We suspect that this is the case due to the fact that there needs to be some optimization techniques applied and the actual design of the database model needs to be
+improved.  Another point that became clear is that for systems with numerous functions, a more robust interface then a window listing all the functions needs to be obtained.  Furthermore, we 
+realized the limitations of the Google Map interface as we tried to map more advanced functionality onto it.  
+There are situations when non-location based queries might be necessary and also the interface does not provide advanced mapping functions
+such as temporal or spatial visualization overlays and analysis techniques.  Overall, there is a need for different types of client applications and also optimizations in the various parts
+of the framework.
+

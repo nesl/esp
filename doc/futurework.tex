@@ -1,0 +1,178 @@
+\section{Future Work} \label{sec:future_work}
+There are a few different areas that should be investigated further
+in terms of this project.  First, some additions need to be made to
+the ESPml schema language in order to more accurately describe certain
+types of systems.  Also, there are changes that need to be made to the
+architecture in order to scale the platform as a whole.  Furthermore, there are
+some issues related to privacy, authentication, and standardization
+that need to be addressed.  Finally, some additional systems and clients need to
+be made for the architecture that can act as services that other
+components could use.
+\subsection{Standardization}
+One of the main actions that needs to be performed in terms of ESPml is
+standardization of a few different aspects of the schema.  ESPml
+allows different sensor types to be defined.  Currently, these types
+can be any arbitrary name.  But there should be a standard naming
+convention for the sensor types.  This will enable users that use the
+framework to interpret the sensor types programmatically.
+Furthermore, certain sensor types should have standard functions that
+need to be defined.  These functions will have a certain prototype
+associated with them and a standard output as well.  For instance, one
+can expect all sensors that observe some type of phenomena and
+quantify it in terms of a measurement to have a function to get the
+current value.  In addition, they should be able to get the average
+over a period of time and to set the sampling rate.  Having
+this type of standardization will make describing sensors that are
+similar easier since the same schema constructs can be repeated and
+guarantee the end user certain basic functionality for most sensor
+types.
+\subsection{Mobility and Availability}
+When describing sensor systems, two attributes that need to be
+expressed in some fashion is mobility and availability.
+Mobility deals with the notion of whether the system actually moves.  Since the ESPml
+schema has a location tag as part of the description language, if the
+systems are mobile then this location tag may not be reliable.  To
+represent the difference between mobile systems and non-mobile
+ones, a mobility tag can be added to different constructs of a system
+to indicate that the location might not be reliable based on the information
+in the registry.  At this point, the location that is in the actual ESPml
+description serves as the last provided location by the sensor system
+or the location that the sensor system is actually located at with the
+highest probability.  In the next revision of the schema, a confidence
+interval can be given to the location indicating how likely the node
+will be at that particular location.  Also, if the mobile tag exists, a function
+will be required to specify the exact location for that system.  
+
+In terms of availability, one would introduce timestamps and a time to
+live counter on the registry.  Basically, when a system is registered
+it would be assigned a time to live in which the system is
+required to re-contact the registry to verify that it is still
+available.  The client program can then check the
+registry to get the time to live requirement and at what time the
+system last updated the registry to evaluate the availability
+confidence level for a system.  Furthermore, statistics can be kept on
+the registry about the quality of the system connection.
+Overall, both mobility and availability are important aspects of a
+sensor system that need to be addressed in the ESPml framework.
+
+\subsection{Authentication and Confidentiality}
+
+There are some key issues that need to be addressed for the ESP framework to
+succeed that revolve around security.  Basically, the idea of
+having certain services private, users authenticated, and keeping data
+confidential are necessary.  There are several methods to address this
+issue.  One can imagine creating a system in the actual ESP framework
+that enables these attributes to be realized, but a better approach is
+to leverage technologies that are already in the market that provide
+similar capabilities.
+
+Since ESP framework revolves around the web services platform, a
+natural candidate that needs to be analyzed is web service security (WSS
+or WS-Security) \cite{securews}.  Basically, WSS is a set of
+enhancements to the SOAP messaging protocol in order to provide the
+protection needed for authenticity, integrity, and confidentiality of
+a message \cite{wss}.  In another words, WSS defines the structure for
+SOAP that enables these properties to take place in the actual message
+document and for the actual functionality that is provided.  Using XML
+Signatures to sign data provides integrity.  XML Signatures contains a
+section which has information about the signature algorithm used,
+canonicalization method used, the digest value, and key values.  By
+checking the signature one can determine if the actual messages
+between various sources has been tampered in some fashion.  Confidentiality
+is provided by employing encryption techniques under the standards of
+XML Encryption. The elements of the SOAP message are
+encrypted instead of in plain text.  Finally, authenticity can be
+provided by using a key management scheme that can be provided by the
+registries.  The registries would provide the public and
+private key infrastructure and manage keys for systems and clients
+that need to use those systems.  Private keys are kept a secret and
+public keys are distributed freely.  The registries could generate the
+key pair for each of the different clients that would want to use a
+system.  The actual system can then send the message to the registry
+to authenticate using a certain method and then a secure connection could
+be established between the client and system since there will be a
+direct connection.  Also, restrictions related to who and to what capacity
+the functions are exposed can be boot strapped through this key management
+protocol
+
+In addition to digital signatures, encryption methods, and key management
+methods, there also exists policy languages for web services.  This includes
+XACML and SAML standards that provide an authorization framework \cite{godik:oea}.  In this
+type of model there exists a PEP (Policy Enforcement Point), PDP (Policy
+Decision Point), PIP (Policy Information Point), and PAP (Policy Administration
+Point).  The PEP takes a request from a client and sends the request to the PDP.
+The PDP then gets policies from the PAP and gets attributes using the PIP concerning
+the subject, the resource, and the environment and makes a decision for the request.
+The request is sent back to the PEP from the PDP and then conveyed to the user.
+
+Clearly, there needs to be more investigation in this space to make a
+system that would work correctly for a framework of this type.
+Overall, previous work in this area will serve as inspiration in
+order to come up with a scheme that will be effective.
+
+\subsection{Selective Sharing and Verification}
+
+Issues related to providing capabilities such as selective sharing and
+verification of certain information adds an extra dimension to the ESP
+framework.  Selective sharing refers to the idea of providing
+different services or outputting various granularity of data
+depending on the client that is actually querying for the service.
+This can be done on the systems themselves, but as scale gets higher,
+one can imagine mediators between the clients and the actual systems
+performing this type of action.  Also, in addition to selective
+sharing, the concept of verifying certain aspects of the system is an
+interesting idea to consider.  For instance, if the framework provided
+a method to verify the location of a sensor system and attach a
+confidence level associated with this index, then this would be useful
+for client applications. One can imagine mediators being involved in
+storing or providing this information in some form.
+
+\subsection{Scalability} 
+
+As more sensors are added and query requirements diversify,
+scalability becomes an issue with the ESP framework.  Managing a
+large amount of sensors with one registry is not feasible without
+having performance issues related to queries and management.  Thus, a
+hierarchy for registries needs to be developed.  The Domain Name
+System (DNS) platform can be used as an example model
+\cite{mockapetris:ddn}. When a system is registered, a unique name
+could be provided to the system.  An example naming scenario would be to
+adopt the unique name based on how domain names are formatted. Thus,
+there will be top level domains and then sub domains associated with
+sensors that are somehow related.  For instance, sensor systems
+located in the same region might share a certain level in the
+naming convention.  Then, the actual registries could be arranged in a
+tree fashion where each registry is responsible for a certain zone of
+entries.  There would be a a set of root registries that handle the
+top-level construct in the naming convention.  If the query that comes
+cannot be addressed by the top-level registry then the request
+would be passed along the hierarchy to a registry that can actually
+handle the request.
+
+In terms of queries, location is the only aspect that can be
+searched for in terms of finding systems.  But one can imagine other
+querying methods.  For instance, the type of sensor, functionality of
+sensor systems, and a common naming convention can all be attributes
+that can be queried for by clients.  These types of searching
+capabilities for sensor systems need to be incorporated into the
+registry to make it usable by a larger set of clients.
+
+\subsection{Client Applications and Systems} 
+
+Currently, there are many different types of network systems
+that are incorporated into the ESP framework.  But there are not many
+clients that use the actual system.  An example Google Map client
+interface is provided that enables searching and 
+interactivity through a map interface, but one can imagine a larger
+plethora of services that can be created on the client side.  Some
+necessary clients include a database archiving entity that takes and
+stores readings from various sensors that are registered in the ESP
+system.  The actual archiver then could add itself as a system
+that other clients could actually interact with if needed.  There are
+also more sophisticated analysis services that can be provided as
+clients by using the capabilities of popular statistical and signal processing 
+software components such as R, ESRI, and Matlab.  Finally, we can imagine
+using Google Earth or other mapping tools to serve as
+further client programs for users to visually query and interact with
+various components in the system.
+

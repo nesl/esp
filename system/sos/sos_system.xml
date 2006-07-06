@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../xml/espml.xsd">
+ <id>http://128.97.93.154:8081</id>
+ <field>
+  <id>1</id>
+  <location>
+   <polygon>
+    <poslist>34.0688,-118.4405,0.00 34.0815,-118.46,0.00 34.0518,-118.46,0.00 34.0509,-118.42,0.00 34.0805,-118.42,0.00 34.0815,-118.46,0.00</poslist>
+   </polygon>
+  </location>
+  <description>This is a small test field of SOS nodes.</description>
+  <function name="getCurrent">
+  <description>Returns the current values for all platforms in this field.</description>
+  </function>
+  <function name="average">
+   <description>Returns the average over all platforms in this field.
+   </description>
+  </function>
+  <platform>
+   <id>1</id>
+   <location>
+    <point>
+     <pos>34.0689,-118.46,0.00</pos>
+    </point>
+   </location>
+   <description>MicaZ Basestation connected to the gateway.</description>
+  </platform>
+
+  <platform>
+   <id>182</id>
+   <location>
+    <point>
+     <pos>34.0689,-118.4401,0.00</pos>
+    </point>
+   </location>
+   <description>MicaZ node with Mica Sensor Board.</description>
+   <sensor>
+    <id>1</id>
+    <location>
+     <point>
+      <pos>34.0689,-118.44,0.00</pos>
+     </point>
+    </location>
+    <description>PhotoSensor</description>
+    <function name="getCurrentValue">
+     <description>Get the current value for this sensor.
+     </description>
+    </function>
+    <function name="getAverageValue">
+      <description>Gets the average for this sensor.
+      </description>
+      <parameter name="numberElements">
+        <description>The number of elements for which the average should be calculated.
+	       </description>
+      </parameter>
+    </function>
+    <function name="setSampleInterval">
+      <description>Sets the sampling frequency for this sensor.
+      </description>
+      <parameter name="frequency">
+        <description>The frequency at which the sensor should sample.
+	</description>
+      </parameter>
+    </function>
+    <type>Light</type>
+   </sensor>
+  </platform>
+
+
+  <platform>
+   <id>214</id>
+   <location>
+    <point>
+     <pos>34.0672,-118.4412,0.00</pos>
+    </point>
+   </location>
+   <description>MicaZ node with Mica Sensor Board.</description>
+   <sensor>
+    <id>1</id>
+    <location>
+     <point>
+      <pos>34.0672,-118.4411,0.00</pos>
+     </point>
+    </location>
+    <description>PhotoSensor</description>
+    <function name="getCurrentValue">
+     <description>Get the current value for this sensor.
+     </description>
+    </function>
+    <function name="getAverageValue">
+      <description>Gets the average for this sensor.
+      </description>
+      <parameter name="numberElements">
+        <description>The number of elements for which the average should be calculated.
+	       </description>
+      </parameter>
+    </function>
+    <function name="setSampleInterval">
+      <description>Sets the sampling frequency for this sensor.
+      </description>
+      <parameter name="frequency">
+        <description>The frequency at which the sensor should sample.
+   	    </description>
+      </parameter>
+    </function>
+    <type>Light</type>
+   </sensor>
+  </platform>
+
+ </field>
+</system>

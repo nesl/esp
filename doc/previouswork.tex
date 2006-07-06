@@ -1,0 +1,154 @@
+\section{Previous Work}
+%IEEE standard
+
+\subsection{Schema Languages}
+\subsubsection{SensorML}
+The Open Geospatial Consortium (OpenGIS) is developing a standard
+called SensorML \cite{opengis:sensorml} which intends to describe a
+sensor system in great detail. It uses GML \cite{opengis:gml}, a XML
+standard also from OpenGIS, to detail the geospatial properties of
+sensors. For example, it includes the relative positions of sensors if
+a system has multiple sensors as well as detailed description of the
+sensors themselves. It is possible to describe what physical entities
+a sensor measures, what accuracy the sensor can achieve, who the
+manufacturer is, etc.
+
+Additionally, SensorML includes basic functionalities to describe processes
+which handle and transform sensor data. For example, if one has a
+small weather station which reports the current wind speed and the air
+temperature, one can create a process which uses these two values and
+outputs the wind-chill factor by applying the following formula
+\[T_c = 35.74 + 0.6215\cdot T - 35.75\cdot V^{0.16} + 0.4275\cdot T
+\cdot V^{0.16}\]
+where $T_c$ is the wind-chill temperature, $T$ the current air
+temperature and $V$ is the wind speed.
+
+SensorML is part of the ``Sensor Web Enablement and OpenGIS
+SensorWeb'' area of interest of the OpenGIS consortium. This entity
+intends to develop ``interoperability interfaces and meta-data
+encodings that enable real time integration of heterogeneous sensor
+webs''. Other standards under development in this area are, as
+described on the OpenGIS website:
+\begin{itemize}
+\item Observations \& Measurements - Information model and encodings for
+observations and measurements.
+\item Sensor Observation Service - Service for managing deployed
+sensors and retrieving sensor data.
+\item Sensor Planning Service - Service to assist in ``collecting
+feasibility plans'' and to process collection requests for a sensor or
+group of sensors.
+\item Web Notification Service - Service to manage dialogue between a
+client and Web service(s) for long duration asynchronous processes.
+\end{itemize}
+
+\subsubsection{TinyML}
+SensorML provides a sensor-centric approach for sensor coordination
+and description. It is also pretty heavy weight and very
+complex. TinyML \cite{ota:tmd} addresses these shortcomings and
+implements a lightweight version but still following the basic ideas of SensorML.
+Furthermore, TinyML is tailored
+to embedded sensor networks. The fundamental elements of TinyML are
+the sensor, the platform, and the sensor field. A sensor describes a
+specific sensor and its properties. A platform represents a physical
+system with a processor, an energy source and a radio
+device. Additionally, a platform has a collection of sensors. The
+sensors measure basic physical phenomena, like temperature, air
+pressure etc. At the larger scale, a sensor field is a collection of
+platforms and represents a sensor network.
+
+TinyML has capabilities to define virtual devices. These virtual
+devices can be generated in an ad-hoc fashion and group together
+different platforms or sensors. This allows the ability to easily query 
+a subset of platforms and sensors by taking advantage of virtual devices. 
+Each element in
+TinyML can have a query or set a flag to indicate a response / actuation
+of that component. This is a very simple mechanism to interact with a
+sensor network.
+
+The advantages of TinyML are that it gives a universal interface to
+interact with a sensor network and it is very
+lightweight. Unfortunately, TinyML is centered too much on sensor
+networks and can not easily be adapted to other sensor systems. Furthermore, it does 
+not have any notion of mobility, i.e., for a sensor network
+where nodes move around, and there is no rigorous
+implementation available.
+
+
+\subsubsection {IEEE 1451}
+The Institute of Electrical and Electronics Engineers (IEEE) developed
+a standard called IEEE 1451 \cite{lee2000iss}, a standard to easily network
+transducers. The first part, IEEE 1451.2 was already adopted in 1997,
+and was closely followed by IEEE 1451.1 in 1999. The standard defines
+ways to find out what transducers are on a network. All of this is
+done at a very low level, i.e., this would be used on a platform where
+the micro-controller wants to know what sensors are attached to its
+input ports and buses.
+
+
+\subsection{Middle-ware Architectures}
+\subsubsection{Atlantis Framework}
+The Atlantis Framework \cite{arnaudov2005umh} is based on TinyML but
+addresses several of its shortcomings. The basic elements are the same, i.e.,
+it can describe fields, platforms, and sensors. Additionally, the
+Atlantis Framework adds data handling abstractions, and a query field
+for more detailed queries. It makes further improvements by
+defining a field task object which can handle asynchronous data
+retrieval. For this purpose, it adds an additional data broker which
+handles the tasks, and specific broker behaviors to describe how to handle 
+the task itself. As a nice roundup, the Atlantis
+Framework adds data filters and event subscription possibilities.  On the downside,
+there is not a standard way to manage the sensor systems since a registry does not
+exist.
+
+\subsubsection{TASK}
+The ``Tiny Application Sensor Kit'' (TASK) \cite{buonadonna2005tsn}
+was designed for use by end-users with minimal sensor network
+knowledge. TASK uses TinyDB as a back-end running on nodes and is thus
+tailored towards sensor networks running on Mica2 mote
+type systems. Additionally, it can handle only one deployment at a time and
+needs to be reconfigured to be used for a different deployment, i.e.,
+it can not handle multiple deployments simultaneously.
+
+\subsubsection{Others}
+F. C. Delicato et al describe in \cite{delicato2003fws} a general
+schema to use Web Service technology in a sensor network, i.e., their
+main physical components are sensor and sink nodes. The paper fails to
+give an implementation of the schema and does not go beyond general web
+service concepts.
+
+In \cite{trossen2005bup} D. Trossen and D. Pavel describe a
+middle-ware application for smart phones. Their architecture consists
+of several different components. They have entities for event
+delivery, acquisition, query resolution, aggregation, access control,
+storage and even registration and availability. The framework is
+mainly tailored towards cellular systems and they claim to have a
+test-bed running, though an implementation was not available at the
+time of writing this report.
+
+\subsection{Web Interfaces}
+The overall architecture of the ESP framework revolves around using web services as
+a platform construct.  By using web services, the framework provides support
+for interoperable machine to machine interaction.  Specifically, we take advantage of
+the communication protocol and service description areas of the web services protocol.
+The interface to the registry and also to the actual systems is through the Simple Object
+Access Protocol (SOAP) and the actual interfaces are described using the Web Services
+Description Language (WSDL) \cite{curbera2002uws}.  ESPml is used to convey the specific
+intent of the various calls by providing data necessary to perform the actions 
+defined by the interface calls.
+
+Current use of web services is very limited in the sensor network realm.  Instead of providing
+access to the actual nodes that are on the system, in terms of sensors, most implementations use
+web services as a method to access data that is stored on a database management unit or an aggregation
+unit \cite{buonadonna2005tsn},\cite{codeblue}.  The queries to these nodes might be complex and involve 
+the query being disseminated throughout the sensor network, but the actual web service interface is still 
+typically confined to interacting with a small set of nodes that are at a higher data granularity 
+level than the actual sensors in the system. 
+
+Other uses of web services in the sensor network area include 
+services that enable sensor data to be published to a particular source that then provides querying services 
+on the data that is collected \cite{sensorbase},\cite{senseweb}.  Also, there are numerous applications that
+provide web interfaces not based on web services but instead custom interface methods.  Overall, based on the
+current landscape of sensor networks and how web services are being used, there is definitely a gap that can
+be filled by a unifying system such as the ESP framework that provides multiple services for a sensor network
+platform.
+ 

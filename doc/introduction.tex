@@ -1,0 +1,50 @@
+\section{Introduction}
+Embedded sensor networks have started becoming useful in a wide variety
+of environments, and there have been numerous research efforts that
+show how these sensor networks can be applied to such areas ranging
+from household situations to scientific pursuits.  For instance,
+sensor networks have been used successfully in improving agriculture
+procedures in vineyards \cite{brooke:vineyard}, providing better
+insight into the learning process in educational institutions
+\cite{srivastava:smart}, and detection and classification of objects
+in military settings \cite{li:detection}.
+
+As the potential for sensor networks in various fields have been realized, 
+software frameworks have been 
+developed to make deployments relatively easy to configure, maintain, and use. 
+For instance, Tiny Application Sensor Kit (TASK) \cite{buonadonna2005tsn} focuses
+on providing a sensor network system in a box, where installation is fairly easy, 
+field tools can be used for remote management and health monitoring, and client tools
+are available for getting specific information from the system.  Mote-View \cite{turon2005mvs}
+addresses the issue of sensor network monitoring in a fine grained fashion 
+by providing a suite of tools to visualize the network health of a particular node 
+in a system by providing data related to bandwidth, congestion, and throughput.  But most of
+these architectures are focused on a single sensor network and are often coupled
+with the underlying software, such as the operating system, that is running on the implementation.
+
+Since sensor networks have a large application space where they can be useful and setting
+up and monitoring a sensor system is becoming easier, the proliferation of sensor networks has
+increased immensely.  But due to the application space variance, there is tremendous heterogeneity
+in the logic for interfacing and collecting data on these systems.  The ESP framework provides
+the middle-ware architecture to bridge the gap between various sensor systems and enables a standard
+way to manage, query, and interact with the various sensor network setups.  
+
+The ESP framework consists of a sensor network description language, in the form of an XML schema (ESPml), that is
+used to fully describe a sensor network in terms of location, setup, type of data that is provided, 
+and any commands that can be enacted on the system.  These details can be provided
+for various granularities ranging from the system as a whole to a specific sensor that is on a particular platform.  
+Also, the framework defines an architecture that enables heterogeneous sensor networks
+to be registered, queried and interacted with through a common interface available using a web services.
+This system architecture, along with the use of ESPml, is demonstrated by registering a variety of sensors and
+interacting with them through a Google Map end user interface.
+
+The rest of the paper is organized as follows.  We discuss previous work including schema languages for describing
+various attributes in sensor networks that are already available, middle-ware architectures that exist in the sensor
+network realm, and existing web interfaces for sensor network systems in Section 2.  A general overview of the system
+as a whole is provided in Section 3.  Section 4 contains details about the ESPml XML schema.  A detailed explanation of the ESP framework
+registry and system architecture are provided in Section 5.  Work related to using and evaluating the ESP framework is in Section
+6.  Section 7 and 8 contain guidelines for future work and the
+conclusion for the paper.  Finally, Section 9 contains acknowledgments.  Also, we have an Appendix that contains
+details about the code structure of the implementation, extra information about the ESPml schema, and figures related to the example
+systems that were used to evaluate the framework.
+

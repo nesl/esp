@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../class/cs219/esp/trunk/xml/espml.xsd">
+    <id></id>
+    <field>
+        <id></id>
+        <location>
+            <point>
+                <pos></pos>
+            </point>
+        </location>
+        <description></description>
+        <platform>
+            <id></id>
+            <location>
+                <point>
+                    <pos></pos>
+                </point>
+            </location>
+            <description></description>
+            <sensor>
+                <id></id>
+                <location>
+                    <point>
+                        <pos></pos>
+                    </point>
+                </location>
+                <description></description>
+                <type></type>
+            </sensor>
+        </platform>
+    </field>
+</system>
+

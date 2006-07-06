@@ -1,0 +1,76 @@
+<system>
+    <id>http://128.97.93.154:9181</id>
+    <field>
+        <id>1</id>
+        <location>
+            <point>
+                <pos>33.9879,-118.47,0.00</pos>
+            </point>
+        </location>
+        <description>California Web Cameras</description>
+        <platform>
+            <id>1</id>
+            <location>
+                <point>
+                    <pos>33.9879,-118.47,0.00</pos>
+                </point>
+            </location>
+            <description>Venice Beach Ocean Front Walk Cam</description>
+            <sensor>
+                <id>1</id>
+                <location>
+                    <point>
+                        <pos>33.9879,-118.47,0.00</pos>
+                    </point>
+                </location>
+                <description>Current Picture for a WebCam installed near \'The Sidewalk Cafe\' at Venice Beach</description>
+                <function name="getPicture">
+                </function>
+                <type>camera</type>
+            </sensor>
+        </platform>
+        <platform>
+            <id>2</id>
+            <location>
+                <point>
+                    <pos>34.0119,-118.49,0.00</pos>
+                </point>
+            </location>
+            <description>Santa Monica Pier Cam</description>
+            <sensor>
+                <id>1</id>
+                <location>
+                    <point>
+                        <pos>34.0119,-118.49,0.00</pos>
+                    </point>
+                </location>
+                <description>Santa Monica Pier Cam</description>
+                <function name="getPicture">
+                </function>
+                <type>camera</type>
+            </sensor>
+        </platform>
+        <platform>
+            <id>3</id>
+            <location>
+                <point>
+                    <pos>34.0719,-118.44,0.00</pos>
+                </point>
+            </location>
+            <description>UCLA Web Cam</description>
+            <sensor>
+                <id>1</id>
+                <location>
+                    <point>
+                        <pos>34.0719,-118.44,0.00</pos>
+                    </point>
+                </location>
+                <description>UCLA Web Cam</description>
+                <function name="getPicture">
+                </function>
+                <type>camera</type>
+            </sensor>
+        </platform>
+    </field>
+</system>
+

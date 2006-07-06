@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="system">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:anyURI"/>
+                <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="id"></xs:element>
+                            <xs:element ref="location"></xs:element>
+                            <xs:element ref="description"></xs:element>
+                            <xs:element ref="function" minOccurs="0" maxOccurs="unbounded"></xs:element>
+                            <xs:element name="platform" minOccurs="1" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="id"></xs:element>
+                                        <xs:element ref="location"></xs:element>
+                                        <xs:element ref="description"></xs:element>
+                                        <xs:element ref="function" minOccurs="0"
+                                            maxOccurs="unbounded"/>
+                                        <xs:element name="sensor" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:complexType>
+                                                <xs:sequence>
+                                                  <xs:element ref="id"></xs:element>
+                                                  <xs:element ref="location"></xs:element>
+                                                  <xs:element ref="description"/>
+                                                  <xs:element ref="function" minOccurs="0" maxOccurs="unbounded"/>
+                                                  <xs:element name="type" type="xs:string"/>
+                                                </xs:sequence>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <!-- Simple element definitions -->
+    <xs:element name="id" type="xs:integer"/>
+    <xs:element name="description" type="xs:string"/>
+
+    <!-- Complex element definitions -->
+    <xs:element name="function">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="description" type="xs:string"></xs:element>
+                <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="description" type="xs:string"></xs:element>
+                            <xs:element name="value" minOccurs="0" maxOccurs="1" type="xs:string"></xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="name" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="output" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="URI" minOccurs="1" maxOccurs="1" type="xs:anyURI"></xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="type" type="xs:string"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="location">
+        <xs:annotation>
+            <xs:documentation>Point: Specify three values representing x,y,z coordintes.</xs:documentation>
+            <xs:documentation>Polygon:  Must be four pairs of x,y,z coordinates with last being identical to the first..</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Mobile" minOccurs="0" maxOccurs="1"></xs:element>
+                <xs:choice>
+                    <xs:element name="point" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="pos" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="polygon" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="poslist" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="query">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="system" minOccurs="1" maxOccurs="unbounded"></xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,83 @@
+\section{Detailed System Design}
+\begin{table*}
+  \begin{center}
+  \begin{tabular}{|l|llllll|}
+    \hline
+    \textbf{Name} & \textbf{Fields} & & & & &\\ \hline \hline
+    System & id & systemURI & description & xml & & \\
+    Field & id & systemId & fieldKey & xml & & \\
+    Platform & id & fieldId & platformKey & xml & &\\
+    Sensor & id & platformId & sensorKey & xml & &\\
+    Location & id & referenceTable & referenceId & xml & & \\
+    Polygon & id & locationId & xml & posList & &\\
+    Point & id & locationId & xml & latitude & longitude & altitude \\
+    \hline
+  \end{tabular}
+  \end{center}
+  \caption{SQL Table Definitions for Registry Entries}
+  \label{tab:registrysql} \end{table*} In addition to the ESPml schema language, the framework provides an architecture to
+enable registration and interaction with sensor networks.  The basic two components involved in this prototype are the registry
+and a system.  The following section details the design of these entities and goes over their interfaces.  
+
+\subsection{Registry} 
+The registry is the component that serves as a repository for sensor systems.  It provides services that
+enables sensor systems to be added, updated, deleted, and queried for.  In terms of its architecture, one can think of it as a
+database back-end with a web service front-end.  The sensor systems are registered by providing an ESPml document.  Thus, the
+database structure is modeled similar to the hierarchy of the ESPml schema.  Table \ref{tab:registrysql} shows the definitions
+of the various tables that are involved in storing a sensor system in the registry database.  One of the main aspects of the
+database structure that needs to be pointed out is how locations, polygons, and points are represented.  Instead of storing them
+as pure XML strings, the basic components of each of these structures are represented as fields in the tables.  This enables
+efficient searching especially when location based queries are initiated on the registry.  To make the registry faster, a more
+thorough design analysis of the database structure needs to be made and is marked for future work.
+
+In terms of interfaces, the registry uses web services via SOAP to implement remote procedure calls.  The following functions are
+exposed as part of the service: \verb|register|, \verb|unRegister|, \verb|update|, and \verb|listSystems|.  
+
+\begin{itemize}
+
+\item \textbf{register}
+
+The register function takes an ESPml document that
+describes a system and adds it to the database.  If there is already a system in the registry with the same identifier, 
+then the old system will be deleted and the new one will be added.  
+
+\item \textbf{unRegister}
+
+In the unRegister case, again a ESPml document will be provided
+as input, and the registry simply deletes the system described from the database.  
+
+\item \textbf{update}
+
+The update function is similar to sending the same system
+twice via the register command.  The purpose is to update an existing entry.  If the entry does not exist, then it will be added.
+
+\item \textbf{listSystems}
+
+The listSystems function takes a low overhead ESPml document that contains a polygon area that is described as a point string.  The registry responds
+with a ESPml document with all the systems, that are part of the polygon area.  
+
+\end{itemize}
+If there is a problem due to improper ESPml formatting or
+inconsistencies exist in the actual call 
+when compared to the database, then an error string is returned.  Standardization of the return value types needs to be made and this is considered an essential next step.
+
+\subsection{System}
+
+The system component represents the actual sensor system that client applications and other sensor systems can access.  Essentially,
+the system component is a gateway to the sensor network as a whole.  Interactions with the sensor network occurs through a web service
+interface named execute.  
+
+\begin{itemize}
+
+\item \textbf{execute}
+
+Once a consuming program finds the appropriate system they want to interact with, the component runs the
+execute command with an ESPml that specifies what functions to run on the system.  The result of the execute command is a lightweight ESPml document
+that contains the output of the functions.  The output elements consist of the type attribute and a URI field.  The actual code necessary
+to execute the function is defined by the individual sensor network.  Also, the availability of the output is also determined by the
+sensor network.  
+\end{itemize}
+Overall, the framework dictates that the system needs to implement the functions that it specifies, provides a standard method
+to actually interact with the system through the execute web service RPC call, and provides a standard way to format the response or output
+for the execution.
+
