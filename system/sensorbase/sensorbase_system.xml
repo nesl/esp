@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../xml/espml.xsd">
+ <id>http://128.97.93.154:7082</id>
+ <field>
+  <id>1</id>
+  <location>
+   <point>
+    <pos>34.0888,-118.4305,0.00</pos>
+   </point>
+  </location>
+  <description>Upload and query system for Sensorbase system.</description>
+  <function name="createProject">
+    <description>Upload a location for a session id.</description>
+    <parameter name="projectName">
+      <description>The name of the actual project which is used during search requests.</description>
+    </parameter>
+    <parameter name="projectDescription">
+      <description>Description for the project itself.</description>
+    </parameter>
+    <parameter name="uspsAddress">
+      <description>USPS address for the information for data that you are logging.</description>
+    </parameter>
+    <parameter name="nwCoordinate">
+      <description>The north and west bound coordinate in "Lat,Long" format.</description>
+    </parameter>
+    <parameter name="seCoordinate">
+      <description>The south and east bound coordinate in "Lat,Long" format.</description>
+    </parameter>
+    <parameter name="minmaxAltitude">
+      <description>The minimum and maximum MSL altitude in meters in "Min,Max" format.</description>
+    </parameter>
+    <parameter name="dataReadUser">
+      <description>Data read permission for any users in "allow" or "deny" format.</description>
+    </parameter>
+    <parameter name="dataWriteUser">
+      <description>Data write permission for any users in "allow" or "deny" format.</description>
+    </parameter>
+    <parameter name="dataReadGroup">
+      <description>Data read permission for all users of a group in "allow" or "deny" format.</description>
+    </parameter>
+    <parameter name="dataWriteGroup">
+      <description>Data read permission for all users of a group in "allow" or "deny" format.</description>
+    </parameter>
+  </function>
+  <function name="publishData">
+    <description></description>
+    <parameter name="emailAddress">
+      <description>The email address of the user.</description>
+    </parameter>
+    <parameter name="password">
+      <description>The password of the user that is publishing.</description>
+    </parameter>
+    <parameter name="overwriteData">
+      <description>Specifies whether to overwrite the existing data with the primary key in "1" or "0" format.</description>
+    </parameter>
+    <parameter name="dataType">
+      <description>The type of data that is being updated, this could be "xml", "text", or "binary".</description>
+    </parameter>
+    <parameter name="dataFile">
+      <description>The actual data that should be published.  In most cases, it will just be a string representing sensorbase xml</description>
+    </parameter>
+  </function>
+  <function name="performQuery">
+    <description></description>
+    <parameter name="dataType">
+      <description>Specifies how the data should be returned which can be "html", "xml" or "text".</description>
+    </parameter>
+    <parameter name="queryString">
+      <description>The actual query to perform.</description>
+    </parameter>
+  </function>
+ </field>
+</system>

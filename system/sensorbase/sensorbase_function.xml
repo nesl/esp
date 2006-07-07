@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="../../xml/espml.xsd">
+ <id>http://128.97.93.154:7082</id>
+ <field>
+  <id>1</id>
+  <location>
+   <polygon>
+    <poslist>34.0888,-118.4305,0.00</poslist>
+   </polygon>
+  </location>
+  <description>Upload and query system for Soundscape server.</description>
+  <function name="createProject">
+  </function>
+  <function name="publishData">
+  </function>
+  <function name="performQuery">
+  </function>
+ </field>
+</system>

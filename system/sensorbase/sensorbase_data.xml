@@ -1,0 +1,10 @@
+<sensorbase_xml>
+ <project_id>12</project_id>
+ <tableName>data</tableName>
+ <attributeList>
+  <attribute attributeName="id"></attribute>
+ </attributeList>
+ <dataList>
+  <data>7</data>
+ </dataList>
+</sensorbase_xml>
