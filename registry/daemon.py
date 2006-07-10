@@ -1,15 +1,5 @@
 #!/usr/bin/env python
 
-###########################################################################
-# configure these paths:
-LOGFILE = '/var/log/pydaemon.log'
-PIDFILE = '/var/run/pydaemon.pid'
-
-# and let USERPROG be the main function of your project
-import mymain
-USERPROG = mymain.main
-###########################################################################
-
 #based on Jürgen Hermanns http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66012
 import sys, os
 
@@ -23,18 +13,7 @@ class Log:
         self.f.write(s)
         self.f.flush()
 
-def main():
-    #change to data directory if needed
-    os.chdir("/root/data")
-    #redirect outputs to a logfile
-    sys.stdout = sys.stderr = Log(open(LOGFILE, 'a+'))
-    #ensure the that the daemon runs a normal user
-    os.setegid(103)     #set group first "pydaemon"
-    os.seteuid(103)     #set user "pydaemon"
-    #start the user program here:
-    USERPROG()
-
-if __name__ == "__main__":
+def createDaemon(rootdir='/', logfile='/var/log/daemon.log', pidfile='/var/run/daemon.pid', gid=103, uid=103):
     # do the UNIX double-fork magic, see Stevens' "Advanced
     # Programming in the UNIX Environment" for details (ISBN 0201563177)
     try:
@@ -56,12 +35,17 @@ if __name__ == "__main__":
         pid = os.fork()
         if pid > 0:
             # exit from second parent, print eventual PID before
-            #print "Daemon PID %d" % pid
-            open(PIDFILE,'w').write("%d"%pid)
+            open(pidfile,'w').write("%d"%pid)
             sys.exit(0)
     except OSError, e:
         print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
         sys.exit(1)
 
-    # start the daemon main loop
-    main()
+    #change to data directory if needed
+    os.chdir(rootdir)
+    #redirect outputs to a logfile
+    sys.stdout = sys.stderr = Log(open(logfile, 'a+'))
+    #ensure that the daemon runs a normal user
+    os.setegid(gid)     #set group first "pydaemon"
+    os.seteuid(uid)     #set user "pydaemon"
+

@@ -1,11 +1,14 @@
+#!/usr/bin/env python
+
 import SOAPpy
 import os, sys
-sys.path.append("../xml/")
+sys.path.append("/home/thomas/projects/esp/trunk/xml/")
 
 from xml.dom import minidom
 import urllib
 import espml, location
 import difdbi
+import daemon
 
 class Registry:
 
@@ -86,6 +89,11 @@ class Registry:
 		return result
 
 if __name__ == '__main__':
+
+	# daemonize the registry
+	daemon.createDaemon('/tmp/', logfile='/tmp/registry.log', pidfile='/var/run/esp_registry.pid',
+			    gid=1000, uid=1000)
+
 	# start the soap registry server
 	registry = Registry(8080)
 	registry.start()
