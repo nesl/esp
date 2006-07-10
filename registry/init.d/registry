@@ -1,13 +1,11 @@
 #! /bin/sh
-# example python daemon starter script
+# registry python daemon starter script
 # based on skeleton from Debian GNU/Linux
-# cliechti@gmx.net
-# place the daemon scripts in a folder accessible by root. /usr/local/sbin is a good idea
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/local/sbin/daemon.py
-NAME=pydaemon
-DESC="Example daemon"
+DAEMON=/home/thomas/projects/esp/trunk/registry/registry.py
+NAME=esp_registry
+DESC="ESP Registry"
 
 test -f $DAEMON || exit 0
 
