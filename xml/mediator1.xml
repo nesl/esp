@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mediator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="espml.xsd">
+ <id>http://128.97.93.154:9081</id>
+ <location>
+  <polygon>
+   <poslist>34.0888,-118.4305,0.00</poslist>
+  </polygon>
+ </location>
+ <description>Mediator for the UCLA region.</description>
+ <system>
+  <id>http://128.97.93.154:7081</id>
+  <description>SoundScape</description>
+ </system>
+ <system>
+  <id>http://128.97.93.154:7082</id>
+  <description>SensorBase</description>
+ </system>
+ <system>
+  <id>http://128.97.93.154:7083</id>
+  <description>Weather Stations</description>
+ </system>
+ <system>
+  <id>http://128.97.93.154:7084</id>
+  <description>SOS PhotoDiode</description>
+ </system>
+ <system>
+  <id>http://128.97.93.154:7086</id>
+  <description>SonyCam</description>
+ </system>
+ <system>
+  <id>http://128.97.93.154:7087</id>
+  <description>iTunes</description>
+ </system>
+ <system>
+  <id>http://128.97.93.154:7088</id>
+  <description>Beach Cams</description>
+ </system>
+</mediator>
