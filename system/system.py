@@ -189,7 +189,7 @@ class System:
                 espmlDocXml = StringIO.StringIO()
                 espmlDocObject.export(espmlDocXml, 0)
 
-                #self._registry.unRegister(espmlDocXml)
+                self._registry.unRegister(espmlDocXml)
 
 	def getMd5Identification(self):
 		#try:
