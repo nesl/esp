@@ -1,32 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="esp">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:choice>
+                    <xs:element name="response" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice>
+                                    <xs:element ref="mediator" minOccurs="1" maxOccurs="unbounded"/>
+                                    <xs:element ref="system" minOccurs="1" maxOccurs="unbounded"/>
+                                </xs:choice>
+                                <xs:element ref="security"/>
+                            </xs:sequence>
+                            <xs:attribute name="type" type="xs:string"/>
+                            </xs:complexType>
+                    </xs:element>
+                    <xs:element name="execute" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice>
+                                    <xs:element ref="mediator"/>
+                                    <xs:element ref="system"/>
+                                </xs:choice>
+                                <xs:element ref="security"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="register" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:choice>
+                                    <xs:element ref="system" minOccurs="1" maxOccurs="unbounded"/>
+                                    <xs:element ref="client" minOccurs="1" maxOccurs="unbounded"/>
+                                    <xs:element ref="mediator" minOccurs="1" maxOccurs="unbounded"/>
+                                </xs:choice>
+                                <xs:element ref="security"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="search" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="rule" minOccurs="1" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element ref="description"></xs:element>
+                                            <xs:element ref="location" minOccurs="0" maxOccurs="unbounded"/>
+                                            <xs:element ref="type" minOccurs="0" maxOccurs="unbounded"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element ref="security"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>    
+    
     <xs:element name="system">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="id" type="xs:anyURI"/>
+                <xs:element ref="netid"/>
+                <xs:element ref="espid" minOccurs="0" maxOccurs="1"/>
                 <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element ref="id"></xs:element>
-                            <xs:element ref="location"></xs:element>
-                            <xs:element ref="description"></xs:element>
-                            <xs:element ref="function" minOccurs="0" maxOccurs="unbounded"></xs:element>
+                            <xs:element ref="id"/>
+                            <xs:element ref="location"/>
+                            <xs:element ref="description"/>
+                            <xs:element ref="function" minOccurs="0" maxOccurs="unbounded"/>
                             <xs:element name="platform" minOccurs="1" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element ref="id"></xs:element>
-                                        <xs:element ref="location"></xs:element>
-                                        <xs:element ref="description"></xs:element>
+                                        <xs:element ref="id"/>
+                                        <xs:element ref="location"/>
+                                        <xs:element ref="description"/>
                                         <xs:element ref="function" minOccurs="0"
                                             maxOccurs="unbounded"/>
+                                        <xs:element ref="type"/>
                                         <xs:element name="sensor" minOccurs="0" maxOccurs="unbounded">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                  <xs:element ref="id"></xs:element>
-                                                  <xs:element ref="location"></xs:element>
+                                                  <xs:element ref="id"/>
+                                                  <xs:element ref="location"/>
                                                   <xs:element ref="description"/>
                                                   <xs:element ref="function" minOccurs="0" maxOccurs="unbounded"/>
-                                                  <xs:element name="type" type="xs:string"/>
+                                                  <xs:element ref="type"/>
                                                 </xs:sequence>
                                             </xs:complexType>
                                         </xs:element>
@@ -41,18 +103,22 @@
     </xs:element>
     <!-- Simple element definitions -->
     <xs:element name="id" type="xs:integer"/>
+    <xs:element name="netid" type="xs:anyURI"/>
+    <xs:element name="espid" type="xs:string"/>
     <xs:element name="description" type="xs:string"/>
+    <xs:element name="type" type="xs:string"/>
+    <xs:element name="time" type="xs:string"/>
 
     <!-- Complex element definitions -->
     <xs:element name="function">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="description" type="xs:string"></xs:element>
+                <xs:element ref="description"/>
                 <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="description" type="xs:string"></xs:element>
-                            <xs:element name="value" minOccurs="0" maxOccurs="1" type="xs:string"></xs:element>
+                            <xs:element ref="description"/>
+                            <xs:element name="value" minOccurs="0" maxOccurs="1" type="xs:string"/>
                         </xs:sequence>
                         <xs:attribute name="name" type="xs:string"/>
                     </xs:complexType>
@@ -60,13 +126,62 @@
                 <xs:element name="output" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="URI" minOccurs="1" maxOccurs="1" type="xs:anyURI"></xs:element>
+                            <xs:element name="URI" minOccurs="1" maxOccurs="1" type="xs:anyURI"/>
                         </xs:sequence>
                         <xs:attribute name="type" type="xs:string"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
             <xs:attribute name="name" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="accesscontrol">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="rule" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element ref="description"/>
+                            <xs:element ref="location" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element ref="time" minOccurs="0" maxOccurs="unbounded"/>
+                            <xs:element ref="espid" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="privacycontrol">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="rule" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="identification" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="description"/>
+                                        <xs:element ref="location" minOccurs="0" maxOccurs="unbounded"/>
+                                        <xs:element ref="time" minOccurs="0" maxOccurs="unbounded"/>
+                                        <xs:element ref="espid" minOccurs="0" maxOccurs="unbounded"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="data" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element ref="description"/>
+                                        <xs:element name="jitter" type="xs:string"/>
+                                        <xs:element name="delay" type="xs:string"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
@@ -77,7 +192,7 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Mobile" minOccurs="0" maxOccurs="1"></xs:element>
+                <xs:element name="Mobile" minOccurs="0" maxOccurs="1"/>
                 <xs:choice>
                     <xs:element name="point" minOccurs="1" maxOccurs="unbounded">
                         <xs:complexType>
@@ -97,10 +212,96 @@
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+    
+    <xs:element name="security">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="description"/>
+                <xs:choice>
+                    <xs:element name="mediatorregistrymsg">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="mediatortime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="systemregistrymsg">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="systemtime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="clientregistrymsg">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="clienttime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="registrymediatormsg">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="clientid" type="xs:string"/>
+                                <xs:element name="mediatorid" type="xs:string"/>
+                                <xs:element name="sessionkey" type="xs:string"/>
+                                <xs:element name="systemkey" type="xs:string"/>
+                                <xs:element name="registrytime" type="xs:string"/>
+                                <xs:element name="lifetime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="registryclientmessage">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="mediatorid" type="xs:string"/>
+                                <xs:element name="sessionkey" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="clientmediatormessage">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="clientid" type="xs:string"/>
+                                <xs:element name="clienttime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="mediatorsystemmessage">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="mediatorkey" type="xs:string"/>
+                                <xs:element name="mediatortime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="systemmediatormessage">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="systemtime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                    <xs:element name="mediatorclientmessage">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element name="mediatortime" type="xs:string"/>
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
     <xs:element name="query">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="system" minOccurs="1" maxOccurs="unbounded"></xs:element>
+                <xs:choice>
+                    <xs:element ref="system" minOccurs="1" maxOccurs="unbounded"/>
+                    <xs:element ref="location" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:choice>
+                <xs:element ref="security" minOccurs="0" maxOccurs="1"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -108,17 +309,32 @@
     <xs:element name="mediator">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="id" type="xs:anyURI"/>
-                <xs:element ref="location"></xs:element>
-                <xs:element ref="description"></xs:element>
+                <xs:element ref="netid"/>
+                <xs:element ref="espid" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="location"/>
+                <xs:element ref="description"/>
+                <xs:element ref="type"/>
                 <xs:element name="system" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="id" type="xs:anyURI"/>
-                            <xs:element ref="description"></xs:element>
+                            <xs:element ref="netid"/>
+                            <xs:element ref="espid" minOccurs="0" maxOccurs="1"/>
+                            <xs:element ref="description"/>
                         </xs:sequence>
                     </xs:complexType>
                     </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="client">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="netid"/>
+                <xs:element ref="espid" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="location"/>
+                <xs:element ref="description"/>
+                <xs:element ref="type"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
