@@ -76,5 +76,5 @@ class Mediator:
 if __name__ == '__main__':
         # start the soap system server
         # ** Change these parameters into arguments called from system.    
-        system = System(9081, "128.97.93.5:1817", "../xml/system2.xml")
+        system = System(9081, "128.97.93.5:1817", "../xml/mediator1.xml")
         system.start()
