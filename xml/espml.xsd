@@ -65,6 +65,8 @@
             <xs:sequence>
                 <xs:element ref="netid"/>
                 <xs:element ref="espid" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="accesscontrol" minOccurs="0" maxOccurs="1"/>
+                <xs:element ref="privacycontrol" minOccurs="0" maxOccurs="1"/>
                 <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
