@@ -55,6 +55,15 @@
                             </xs:sequence>
                         </xs:complexType>
                     </xs:element>
+                    <xs:element name="error" minOccurs="1" maxOccurs="unbounded">
+                        <xs:complexType>
+                            <xs:sequence>
+                                <xs:element ref="type" minOccurs="1" maxOccurs="1" type="xs:string" />
+                                <xs:element ref="message" minOccurs="1" maxOccurs="1" type="xs:string" />
+                                <xs:element ref="number" minOccurs="1" maxOccurs="1" type="xs:integer" />
+                            </xs:sequence>
+                        </xs:complexType>
+                    </xs:element>
                 </xs:choice>
             </xs:sequence>
         </xs:complexType>

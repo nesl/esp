@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Jul 13 09:23:51 2006 by generateDS.py.
+# Generated Thu Jul 13 11:53:40 2006 by generateDS.py.
 #
 
 import sys
@@ -125,7 +125,7 @@ class MixedContainer:
 
 class esp:
     subclass = None
-    def __init__(self, response=None, execute=None, register=None, search=None):
+    def __init__(self, response=None, execute=None, register=None, search=None, error=None):
         if response is None:
             self.response = []
         else:
@@ -142,6 +142,10 @@ class esp:
             self.search = []
         else:
             self.search = search
+        if error is None:
+            self.error = []
+        else:
+            self.error = error
     def factory(*args_, **kwargs_):
         if esp.subclass:
             return esp.subclass(*args_, **kwargs_)
@@ -164,6 +168,10 @@ class esp:
     def setSearch(self, search): self.search = search
     def addSearch(self, value): self.search.append(value)
     def insertSearch(self, index, value): self.search[index] = value
+    def getError(self): return self.error
+    def setError(self, error): self.error = error
+    def addError(self, value): self.error.append(value)
+    def insertError(self, index, value): self.error[index] = value
     def export(self, outfile, level, name_='esp'):
         showIndent(outfile, level)
         outfile.write('<%s>\n' % name_)
@@ -181,6 +189,8 @@ class esp:
             register_.export(outfile, level)
         for search_ in self.getSearch():
             search_.export(outfile, level)
+        for error_ in self.getError():
+            error_.export(outfile, level)
     def exportLiteral(self, outfile, level, name_='esp'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
@@ -236,6 +246,18 @@ class esp:
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('error=[\n')
+        level += 1
+        for error in self.error:
+            showIndent(outfile, level)
+            outfile.write('error(\n')
+            error.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
     def build(self, node_):
         attrs = node_.attributes
         self.buildAttributes(attrs)
@@ -265,6 +287,11 @@ class esp:
             obj_ = search.factory()
             obj_.build(child_)
             self.search.append(obj_)
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'error':
+            obj_ = error.factory()
+            obj_.build(child_)
+            self.error.append(obj_)
 # end class esp
 
 
@@ -783,6 +810,85 @@ class rule:
                 type_ += text__content_.nodeValue
             self.ttype.append(type_)
 # end class rule
+
+
+class error:
+    subclass = None
+    def __init__(self, xs_string='', xs_string='', xs_integer=-1):
+        self.xs_string = xs_string
+        self.xs_string = xs_string
+        self.xs_integer = xs_integer
+    def factory(*args_, **kwargs_):
+        if error.subclass:
+            return error.subclass(*args_, **kwargs_)
+        else:
+            return error(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def getXs_string(self): return self.xs_string
+    def setXs_string(self, xs_string): self.xs_string = xs_string
+    def getXs_string(self): return self.xs_string
+    def setXs_string(self, xs_string): self.xs_string = xs_string
+    def getXs_integer(self): return self.xs_integer
+    def setXs_integer(self, xs_integer): self.xs_integer = xs_integer
+    def export(self, outfile, level, name_='error'):
+        showIndent(outfile, level)
+        outfile.write('<%s>\n' % name_)
+        self.exportChildren(outfile, level + 1, name_)
+        showIndent(outfile, level)
+        outfile.write('</%s>\n' % name_)
+    def exportAttributes(self, outfile, level, name_='error'):
+        pass
+    def exportChildren(self, outfile, level, name_='error'):
+        showIndent(outfile, level)
+        outfile.write('<xs:string>%s</xs:string>\n' % quote_xml(self.getXs_string()))
+        showIndent(outfile, level)
+        outfile.write('<xs:string>%s</xs:string>\n' % quote_xml(self.getXs_string()))
+        showIndent(outfile, level)
+        outfile.write('<xs:integer>%d</xs:integer>\n' % self.getXs_integer())
+    def exportLiteral(self, outfile, level, name_='error'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('xs_string=%s,\n' % quote_python(self.getXs_string()))
+        showIndent(outfile, level)
+        outfile.write('xs_string=%s,\n' % quote_python(self.getXs_string()))
+        showIndent(outfile, level)
+        outfile.write('xs_integer=%d,\n' % self.getXs_integer())
+    def build(self, node_):
+        attrs = node_.attributes
+        self.buildAttributes(attrs)
+        for child_ in node_.childNodes:
+            nodeName_ = child_.nodeName.split(':')[-1]
+            self.buildChildren(child_, nodeName_)
+    def buildAttributes(self, attrs):
+        pass
+    def buildChildren(self, child_, nodeName_):
+        if child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'xs:string':
+            xs_string_ = ''
+            for text__content_ in child_.childNodes:
+                xs_string_ += text__content_.nodeValue
+            self.xs_string = xs_string_
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'xs:string':
+            xs_string_ = ''
+            for text__content_ in child_.childNodes:
+                xs_string_ += text__content_.nodeValue
+            self.xs_string = xs_string_
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'xs:integer':
+            if child_.firstChild:
+                sval_ = child_.firstChild.nodeValue
+                try:
+                    ival_ = int(sval_)
+                except ValueError:
+                    raise ValueError('requires integer -- %s' % child_.toxml())
+                self.xs_integer = ival_
+# end class error
 
 
 class system:
@@ -3278,6 +3384,19 @@ class SaxEspHandler(handler.ContentHandler):
             stackObj = SaxStackElement('ttype', None)
             self.stack.append(stackObj)
             done = 1
+        elif name == 'error':
+            obj = error.factory()
+            stackObj = SaxStackElement('error', obj)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'xs:string':
+            stackObj = SaxStackElement('xs_string', None)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'xs:integer':
+            stackObj = SaxStackElement('xs_integer', None)
+            self.stack.append(stackObj)
+            done = 1
         elif name == 'netid':
             stackObj = SaxStackElement('netid', None)
             self.stack.append(stackObj)
@@ -3546,6 +3665,30 @@ class SaxEspHandler(handler.ContentHandler):
             if len(self.stack) >= 2:
                 content = self.stack[-1].content
                 self.stack[-2].obj.addType(content)
+                self.stack.pop()
+                done = 1
+        elif name == 'error':
+            if len(self.stack) >= 2:
+                self.stack[-2].obj.addError(self.stack[-1].obj)
+                self.stack.pop()
+                done = 1
+        elif name == 'xs:string':
+            if len(self.stack) >= 2:
+                content = self.stack[-1].content
+                self.stack[-2].obj.setXs_string(content)
+                self.stack.pop()
+                done = 1
+        elif name == 'xs:integer':
+            if len(self.stack) >= 2:
+                content = self.stack[-1].content
+                if content:
+                    try:
+                        content = int(content)
+                    except:
+                        self.reportError('"xs:integer" must be integer -- content: %s' % content)
+                else:
+                    content = -1
+                self.stack[-2].obj.setXs_integer(content)
                 self.stack.pop()
                 done = 1
         elif name == 'netid':
