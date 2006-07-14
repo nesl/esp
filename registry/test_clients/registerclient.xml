@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../xml/espml.xsd">
+    <register>
+        <client>
+            <netid>http://localhost:10000</netid>
+            <location>
+                <point>
+                    <pos>128.0, -31, 0</pos>
+                </point>
+            </location>
+            <description/>
+            <type/>
+        </client>
+        <security>
+            <description/>
+            <clientregistrymsg>
+                <clienttime/>
+            </clientregistrymsg>
+        </security>
+    </register>
+</esp>

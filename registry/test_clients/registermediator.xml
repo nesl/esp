@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="../../xml/espml.xsd">
+    <register>
+        <mediator>
+            <netid>localhost:20000</netid>
+            <location>
+                <point>
+                    <pos>-118, 36, 0 </pos>
+                </point>                
+            </location>
+            <description></description>
+            <type></type>
+            <system>
+                <espid>123</espid>
+                <description></description>
+            </system>
+            
+        </mediator>
+        
+        <security>
+            <description></description>
+            <mediatorregistrymsg>
+                <mediatortime></mediatortime>
+            </mediatorregistrymsg>            
+        </security>
+    </register>
+</esp>
