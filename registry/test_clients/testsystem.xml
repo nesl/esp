@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="espml.xsd">
+ <system>
+ <espid>http://www.schmidi.com</espid>
+ <field>
+  <id>1</id>
+  <location>
+   <point>
+    <pos>36.2,24.2,0.0</pos>
+   </point>
+  </location>
+  <description>This is the first test field</description>
+  <function name="add">
+   <parameter name="firstVal">
+    <value>1</value>
+   </parameter>
+   <parameter name="secondVal">
+    <value>2</value>
+   </parameter> 
+  </function>
+  <platform>
+   <id>1</id>
+   <location>
+    <point>
+     <pos>36.3,24.3,0.0</pos>
+    </point>
+   </location>
+   <description>Test Platform MicaSchmidi</description>
+   <function name="sub">
+    <parameter name="firstVal">
+     <value>1</value>
+    </parameter>    
+   </function>
+   <function name="min">
+    <parameter name="firstVal">
+     <value>1</value>
+    </parameter>   
+   </function>
+   <sensor>
+    <id>1</id>
+    <location>
+     <point>
+      <pos>36.3,24.3,0.0</pos>
+     </point>
+    </location>
+    <description>Put link to datasheet here.</description>
+    <function name="mean"/>    
+    <type>Temperature</type>
+   </sensor>
+  </platform>
+ </field>
+</system>
+</esp>
