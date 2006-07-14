@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Jul 13 17:40:06 2006 by generateDS.py.
+# Generated Fri Jul 14 14:05:15 2006 by generateDS.py.
 #
 
 import sys
@@ -125,7 +125,7 @@ class MixedContainer:
 
 class esp:
     subclass = None
-    def __init__(self, response=None, execute=None, register=None, search=None, error=None):
+    def __init__(self, response=None, execute=None, register=None, search=None):
         if response is None:
             self.response = []
         else:
@@ -142,10 +142,6 @@ class esp:
             self.search = []
         else:
             self.search = search
-        if error is None:
-            self.error = []
-        else:
-            self.error = error
     def factory(*args_, **kwargs_):
         if esp.subclass:
             return esp.subclass(*args_, **kwargs_)
@@ -168,10 +164,6 @@ class esp:
     def setSearch(self, search): self.search = search
     def addSearch(self, value): self.search.append(value)
     def insertSearch(self, index, value): self.search[index] = value
-    def getError(self): return self.error
-    def setError(self, error): self.error = error
-    def addError(self, value): self.error.append(value)
-    def insertError(self, index, value): self.error[index] = value
     def export(self, outfile, level, name_='esp'):
         showIndent(outfile, level)
         outfile.write('<%s>\n' % name_)
@@ -189,8 +181,6 @@ class esp:
             register_.export(outfile, level)
         for search_ in self.getSearch():
             search_.export(outfile, level)
-        for error_ in self.getError():
-            error_.export(outfile, level)
     def exportLiteral(self, outfile, level, name_='esp'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
@@ -246,18 +236,6 @@ class esp:
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
-        showIndent(outfile, level)
-        outfile.write('error=[\n')
-        level += 1
-        for error in self.error:
-            showIndent(outfile, level)
-            outfile.write('error(\n')
-            error.exportLiteral(outfile, level)
-            showIndent(outfile, level)
-            outfile.write('),\n')
-        level -= 1
-        showIndent(outfile, level)
-        outfile.write('],\n')
     def build(self, node_):
         attrs = node_.attributes
         self.buildAttributes(attrs)
@@ -287,17 +265,12 @@ class esp:
             obj_ = search.factory()
             obj_.build(child_)
             self.search.append(obj_)
-        elif child_.nodeType == Node.ELEMENT_NODE and \
-            nodeName_ == 'error':
-            obj_ = error.factory()
-            obj_.build(child_)
-            self.error.append(obj_)
 # end class esp
 
 
 class response:
     subclass = None
-    def __init__(self, ttype='', mediator=None, system=None, security=None):
+    def __init__(self, ttype='', mediator=None, system=None, client=None, error=None, security=None):
         self.ttype = ttype
         if mediator is None:
             self.mediator = []
@@ -307,6 +280,14 @@ class response:
             self.system = []
         else:
             self.system = system
+        if client is None:
+            self.client = []
+        else:
+            self.client = client
+        if error is None:
+            self.error = []
+        else:
+            self.error = error
         self.security = security
     def factory(*args_, **kwargs_):
         if response.subclass:
@@ -322,6 +303,14 @@ class response:
     def setSystem(self, system): self.system = system
     def addSystem(self, value): self.system.append(value)
     def insertSystem(self, index, value): self.system[index] = value
+    def getClient(self): return self.client
+    def setClient(self, client): self.client = client
+    def addClient(self, value): self.client.append(value)
+    def insertClient(self, index, value): self.client[index] = value
+    def getError(self): return self.error
+    def setError(self, error): self.error = error
+    def addError(self, value): self.error.append(value)
+    def insertError(self, index, value): self.error[index] = value
     def getSecurity(self): return self.security
     def setSecurity(self, security): self.security = security
     def getType(self): return self.ttype
@@ -342,6 +331,10 @@ class response:
             mediator_.export(outfile, level)
         for system_ in self.getSystem():
             system_.export(outfile, level)
+        for client_ in self.getClient():
+            client_.export(outfile, level)
+        for error_ in self.getError():
+            error_.export(outfile, level)
         if self.security:
             self.security.export(outfile, level)
     def exportLiteral(self, outfile, level, name_='response'):
@@ -376,6 +369,30 @@ class response:
         level -= 1
         showIndent(outfile, level)
         outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('client=[\n')
+        level += 1
+        for client in self.client:
+            showIndent(outfile, level)
+            outfile.write('client(\n')
+            client.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
+        showIndent(outfile, level)
+        outfile.write('error=[\n')
+        level += 1
+        for error in self.error:
+            showIndent(outfile, level)
+            outfile.write('error(\n')
+            error.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
+        level -= 1
+        showIndent(outfile, level)
+        outfile.write('],\n')
         if self.security:
             showIndent(outfile, level)
             outfile.write('security=security(\n')
@@ -403,11 +420,100 @@ class response:
             obj_.build(child_)
             self.system.append(obj_)
         elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'client':
+            obj_ = client.factory()
+            obj_.build(child_)
+            self.client.append(obj_)
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'error':
+            obj_ = error.factory()
+            obj_.build(child_)
+            self.error.append(obj_)
+        elif child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'security':
             obj_ = security.factory()
             obj_.build(child_)
             self.setSecurity(obj_)
 # end class response
+
+
+class error:
+    subclass = None
+    def __init__(self, ttype='', message='', number=-1):
+        self.ttype = ttype
+        self.message = message
+        self.number = number
+    def factory(*args_, **kwargs_):
+        if error.subclass:
+            return error.subclass(*args_, **kwargs_)
+        else:
+            return error(*args_, **kwargs_)
+    factory = staticmethod(factory)
+    def getType(self): return self.ttype
+    def setType(self, ttype): self.ttype = ttype
+    def getMessage(self): return self.message
+    def setMessage(self, message): self.message = message
+    def getNumber(self): return self.number
+    def setNumber(self, number): self.number = number
+    def export(self, outfile, level, name_='error'):
+        showIndent(outfile, level)
+        outfile.write('<%s>\n' % name_)
+        self.exportChildren(outfile, level + 1, name_)
+        showIndent(outfile, level)
+        outfile.write('</%s>\n' % name_)
+    def exportAttributes(self, outfile, level, name_='error'):
+        pass
+    def exportChildren(self, outfile, level, name_='error'):
+        showIndent(outfile, level)
+        outfile.write('<type>%s</type>\n' % quote_xml(self.getType()))
+        showIndent(outfile, level)
+        outfile.write('<message>%s</message>\n' % quote_xml(self.getMessage()))
+        showIndent(outfile, level)
+        outfile.write('<number>%d</number>\n' % self.getNumber())
+    def exportLiteral(self, outfile, level, name_='error'):
+        level += 1
+        self.exportLiteralAttributes(outfile, level, name_)
+        self.exportLiteralChildren(outfile, level, name_)
+    def exportLiteralAttributes(self, outfile, level, name_):
+        pass
+    def exportLiteralChildren(self, outfile, level, name_):
+        showIndent(outfile, level)
+        outfile.write('ttype=%s,\n' % quote_python(self.getType()))
+        showIndent(outfile, level)
+        outfile.write('message=%s,\n' % quote_python(self.getMessage()))
+        showIndent(outfile, level)
+        outfile.write('number=%d,\n' % self.getNumber())
+    def build(self, node_):
+        attrs = node_.attributes
+        self.buildAttributes(attrs)
+        for child_ in node_.childNodes:
+            nodeName_ = child_.nodeName.split(':')[-1]
+            self.buildChildren(child_, nodeName_)
+    def buildAttributes(self, attrs):
+        pass
+    def buildChildren(self, child_, nodeName_):
+        if child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'type':
+            type_ = ''
+            for text__content_ in child_.childNodes:
+                type_ += text__content_.nodeValue
+            self.ttype = type_
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'message':
+            message_ = ''
+            for text__content_ in child_.childNodes:
+                message_ += text__content_.nodeValue
+            self.message = message_
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'number':
+            if child_.firstChild:
+                sval_ = child_.firstChild.nodeValue
+                try:
+                    ival_ = int(sval_)
+                except ValueError:
+                    raise ValueError('requires integer -- %s' % child_.toxml())
+                self.number = ival_
+# end class error
 
 
 class execute:
@@ -812,92 +918,14 @@ class rule:
 # end class rule
 
 
-class error:
-    subclass = None
-    def __init__(self, ttype='', message='', number=-1):
-        self.ttype = ttype
-        self.message = message
-        self.number = number
-    def factory(*args_, **kwargs_):
-        if error.subclass:
-            return error.subclass(*args_, **kwargs_)
-        else:
-            return error(*args_, **kwargs_)
-    factory = staticmethod(factory)
-    def getType(self): return self.ttype
-    def setType(self, ttype): self.ttype = ttype
-    def getMessage(self): return self.message
-    def setMessage(self, message): self.message = message
-    def getNumber(self): return self.number
-    def setNumber(self, number): self.number = number
-    def export(self, outfile, level, name_='error'):
-        showIndent(outfile, level)
-        outfile.write('<%s>\n' % name_)
-        self.exportChildren(outfile, level + 1, name_)
-        showIndent(outfile, level)
-        outfile.write('</%s>\n' % name_)
-    def exportAttributes(self, outfile, level, name_='error'):
-        pass
-    def exportChildren(self, outfile, level, name_='error'):
-        showIndent(outfile, level)
-        outfile.write('<type>%s</type>\n' % quote_xml(self.getType()))
-        showIndent(outfile, level)
-        outfile.write('<message>%s</message>\n' % quote_xml(self.getMessage()))
-        showIndent(outfile, level)
-        outfile.write('<number>%d</number>\n' % self.getNumber())
-    def exportLiteral(self, outfile, level, name_='error'):
-        level += 1
-        self.exportLiteralAttributes(outfile, level, name_)
-        self.exportLiteralChildren(outfile, level, name_)
-    def exportLiteralAttributes(self, outfile, level, name_):
-        pass
-    def exportLiteralChildren(self, outfile, level, name_):
-        showIndent(outfile, level)
-        outfile.write('ttype=%s,\n' % quote_python(self.getType()))
-        showIndent(outfile, level)
-        outfile.write('message=%s,\n' % quote_python(self.getMessage()))
-        showIndent(outfile, level)
-        outfile.write('number=%d,\n' % self.getNumber())
-    def build(self, node_):
-        attrs = node_.attributes
-        self.buildAttributes(attrs)
-        for child_ in node_.childNodes:
-            nodeName_ = child_.nodeName.split(':')[-1]
-            self.buildChildren(child_, nodeName_)
-    def buildAttributes(self, attrs):
-        pass
-    def buildChildren(self, child_, nodeName_):
-        if child_.nodeType == Node.ELEMENT_NODE and \
-            nodeName_ == 'type':
-            type_ = ''
-            for text__content_ in child_.childNodes:
-                type_ += text__content_.nodeValue
-            self.ttype = type_
-        elif child_.nodeType == Node.ELEMENT_NODE and \
-            nodeName_ == 'message':
-            message_ = ''
-            for text__content_ in child_.childNodes:
-                message_ += text__content_.nodeValue
-            self.message = message_
-        elif child_.nodeType == Node.ELEMENT_NODE and \
-            nodeName_ == 'number':
-            if child_.firstChild:
-                sval_ = child_.firstChild.nodeValue
-                try:
-                    ival_ = int(sval_)
-                except ValueError:
-                    raise ValueError('requires integer -- %s' % child_.toxml())
-                self.number = ival_
-# end class error
-
-
 class system:
     subclass = None
-    def __init__(self, netid='', espid='', accesscontrol=None, privacycontrol=None, field=None):
+    def __init__(self, netid='', espid='', accesscontrol=None, privacycontrol=None, description='', field=None):
         self.netid = netid
         self.espid = espid
         self.accesscontrol = accesscontrol
         self.privacycontrol = privacycontrol
+        self.description = description
         if field is None:
             self.field = []
         else:
@@ -916,6 +944,8 @@ class system:
     def setAccesscontrol(self, accesscontrol): self.accesscontrol = accesscontrol
     def getPrivacycontrol(self): return self.privacycontrol
     def setPrivacycontrol(self, privacycontrol): self.privacycontrol = privacycontrol
+    def getDescription(self): return self.description
+    def setDescription(self, description): self.description = description
     def getField(self): return self.field
     def setField(self, field): self.field = field
     def addField(self, value): self.field.append(value)
@@ -937,6 +967,8 @@ class system:
             self.accesscontrol.export(outfile, level)
         if self.privacycontrol:
             self.privacycontrol.export(outfile, level)
+        showIndent(outfile, level)
+        outfile.write('<description>%s</description>\n' % quote_xml(self.getDescription()))
         for field_ in self.getField():
             field_.export(outfile, level)
     def exportLiteral(self, outfile, level, name_='system'):
@@ -962,6 +994,8 @@ class system:
             self.privacycontrol.exportLiteral(outfile, level)
             showIndent(outfile, level)
             outfile.write('),\n')
+        showIndent(outfile, level)
+        outfile.write('description=%s,\n' % quote_python(self.getDescription()))
         showIndent(outfile, level)
         outfile.write('field=[\n')
         level += 1
@@ -1005,6 +1039,12 @@ class system:
             obj_ = privacycontrol.factory()
             obj_.build(child_)
             self.setPrivacycontrol(obj_)
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'description':
+            description_ = ''
+            for text__content_ in child_.childNodes:
+                description_ += text__content_.nodeValue
+            self.description = description_
         elif child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'field':
             obj_ = field.factory()
@@ -3341,6 +3381,28 @@ class SaxEspHandler(handler.ContentHandler):
             stackObj = SaxStackElement('system', obj)
             self.stack.append(stackObj)
             done = 1
+        elif name == 'client':
+            obj = client.factory()
+            stackObj = SaxStackElement('client', obj)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'error':
+            obj = error.factory()
+            stackObj = SaxStackElement('error', obj)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'type':
+            stackObj = SaxStackElement('ttype', None)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'message':
+            stackObj = SaxStackElement('message', None)
+            self.stack.append(stackObj)
+            done = 1
+        elif name == 'number':
+            stackObj = SaxStackElement('number', None)
+            self.stack.append(stackObj)
+            done = 1
         elif name == 'security':
             obj = security.factory()
             stackObj = SaxStackElement('security', obj)
@@ -3354,11 +3416,6 @@ class SaxEspHandler(handler.ContentHandler):
         elif name == 'register':
             obj = register.factory()
             stackObj = SaxStackElement('register', obj)
-            self.stack.append(stackObj)
-            done = 1
-        elif name == 'client':
-            obj = client.factory()
-            stackObj = SaxStackElement('client', obj)
             self.stack.append(stackObj)
             done = 1
         elif name == 'search':
@@ -3378,23 +3435,6 @@ class SaxEspHandler(handler.ContentHandler):
         elif name == 'location':
             obj = location.factory()
             stackObj = SaxStackElement('location', obj)
-            self.stack.append(stackObj)
-            done = 1
-        elif name == 'type':
-            stackObj = SaxStackElement('ttype', None)
-            self.stack.append(stackObj)
-            done = 1
-        elif name == 'error':
-            obj = error.factory()
-            stackObj = SaxStackElement('error', obj)
-            self.stack.append(stackObj)
-            done = 1
-        elif name == 'message':
-            stackObj = SaxStackElement('message', None)
-            self.stack.append(stackObj)
-            done = 1
-        elif name == 'number':
-            stackObj = SaxStackElement('number', None)
             self.stack.append(stackObj)
             done = 1
         elif name == 'netid':
@@ -3620,6 +3660,41 @@ class SaxEspHandler(handler.ContentHandler):
                 self.stack[-2].obj.addSystem(self.stack[-1].obj)
                 self.stack.pop()
                 done = 1
+        elif name == 'client':
+            if len(self.stack) >= 2:
+                self.stack[-2].obj.addClient(self.stack[-1].obj)
+                self.stack.pop()
+                done = 1
+        elif name == 'error':
+            if len(self.stack) >= 2:
+                self.stack[-2].obj.addError(self.stack[-1].obj)
+                self.stack.pop()
+                done = 1
+        elif name == 'type':
+            if len(self.stack) >= 2:
+                content = self.stack[-1].content
+                self.stack[-2].obj.setType(content)
+                self.stack.pop()
+                done = 1
+        elif name == 'message':
+            if len(self.stack) >= 2:
+                content = self.stack[-1].content
+                self.stack[-2].obj.setMessage(content)
+                self.stack.pop()
+                done = 1
+        elif name == 'number':
+            if len(self.stack) >= 2:
+                content = self.stack[-1].content
+                if content:
+                    try:
+                        content = int(content)
+                    except:
+                        self.reportError('"number" must be integer -- content: %s' % content)
+                else:
+                    content = -1
+                self.stack[-2].obj.setNumber(content)
+                self.stack.pop()
+                done = 1
         elif name == 'security':
             if len(self.stack) >= 2:
                 self.stack[-2].obj.setSecurity(self.stack[-1].obj)
@@ -3633,11 +3708,6 @@ class SaxEspHandler(handler.ContentHandler):
         elif name == 'register':
             if len(self.stack) >= 2:
                 self.stack[-2].obj.addRegister(self.stack[-1].obj)
-                self.stack.pop()
-                done = 1
-        elif name == 'client':
-            if len(self.stack) >= 2:
-                self.stack[-2].obj.addClient(self.stack[-1].obj)
                 self.stack.pop()
                 done = 1
         elif name == 'search':
@@ -3659,36 +3729,6 @@ class SaxEspHandler(handler.ContentHandler):
         elif name == 'location':
             if len(self.stack) >= 2:
                 self.stack[-2].obj.addLocation(self.stack[-1].obj)
-                self.stack.pop()
-                done = 1
-        elif name == 'type':
-            if len(self.stack) >= 2:
-                content = self.stack[-1].content
-                self.stack[-2].obj.addType(content)
-                self.stack.pop()
-                done = 1
-        elif name == 'error':
-            if len(self.stack) >= 2:
-                self.stack[-2].obj.addError(self.stack[-1].obj)
-                self.stack.pop()
-                done = 1
-        elif name == 'message':
-            if len(self.stack) >= 2:
-                content = self.stack[-1].content
-                self.stack[-2].obj.setMessage(content)
-                self.stack.pop()
-                done = 1
-        elif name == 'number':
-            if len(self.stack) >= 2:
-                content = self.stack[-1].content
-                if content:
-                    try:
-                        content = int(content)
-                    except:
-                        self.reportError('"number" must be integer -- content: %s' % content)
-                else:
-                    content = -1
-                self.stack[-2].obj.setNumber(content)
                 self.stack.pop()
                 done = 1
         elif name == 'netid':

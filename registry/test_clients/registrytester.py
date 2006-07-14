@@ -2,10 +2,10 @@ import SOAPpy
 from xml.dom import minidom
 
 def registerClient():
-	pass
+	register("registerclient.xml")
 
 def registerMediator():
-	pass
+	register("registermediator.xml")
 
 def registerSystem():
 	register("registersystem.xml")
@@ -17,7 +17,18 @@ def register(xml):
 
 if __name__ == '__main__':
 	
+	print
+	print 20*'='
+	print
 	registerSystem()
+	print
+	print 20*'='
+	print
+	registerMediator()
+	print
+	print 20*'='
+	print
+	registerClient()
 
 	
 

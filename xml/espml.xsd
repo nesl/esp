@@ -10,6 +10,16 @@
                                 <xs:choice>
                                     <xs:element ref="mediator" minOccurs="1" maxOccurs="unbounded"/>
                                     <xs:element ref="system" minOccurs="1" maxOccurs="unbounded"/>
+                                    <xs:element ref="client" minOccurs="1" maxOccurs="unbounded"/>
+	                    	    <xs:element name="error" minOccurs="1" maxOccurs="unbounded">
+	                                <xs:complexType>
+                                            <xs:sequence>
+                                                <xs:element name="type" minOccurs="1" maxOccurs="1" type="xs:string" />
+                                                <xs:element name="message" minOccurs="1" maxOccurs="1" type="xs:string" />
+                                                <xs:element name="number" minOccurs="1" maxOccurs="1" type="xs:integer" />
+                                            </xs:sequence>
+                                        </xs:complexType>
+                                     </xs:element>
                                 </xs:choice>
                                 <xs:element ref="security"/>
                             </xs:sequence>
@@ -55,15 +65,6 @@
                             </xs:sequence>
                         </xs:complexType>
                     </xs:element>
-                    <xs:element name="error" minOccurs="1" maxOccurs="unbounded">
-                        <xs:complexType>
-                            <xs:sequence>
-                                <xs:element name="type" minOccurs="1" maxOccurs="1" type="xs:string" />
-                                <xs:element name="message" minOccurs="1" maxOccurs="1" type="xs:string" />
-                                <xs:element name="number" minOccurs="1" maxOccurs="1" type="xs:integer" />
-                            </xs:sequence>
-                        </xs:complexType>
-                    </xs:element>
                 </xs:choice>
             </xs:sequence>
         </xs:complexType>
@@ -76,6 +77,7 @@
                 <xs:element ref="espid" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="accesscontrol" minOccurs="0" maxOccurs="1"/>
                 <xs:element ref="privacycontrol" minOccurs="0" maxOccurs="1"/>
+		<xs:element ref="description"/>
                 <xs:element name="field" minOccurs="1" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>

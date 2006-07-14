@@ -1,5 +1,7 @@
+#!/usr/bin/env python
 """ This is the database interface.
 """
+
 from MySQLdb import *
 import types
 import os, sys
@@ -9,14 +11,16 @@ import config
 import StringIO
 import xml.dom
 
-def DBOpen():
+def DBOpen(log):
     global _db
-
+    global logging
+    logging = log
+    
     if Database.db == None:
         try:
             Database.db = connect(config.sqlServer, config.sqlUser, config.sqlPw, config.sqlDb)
         except DatabaseError, msg:
-            print 'Could not open database: %s'%msg
+            logging.error('Could not open database: %s'%msg)
         _db = None
 
 
@@ -35,6 +39,7 @@ class Database:
     db = None
 
     def __init__(self):
+        logging.info("Database started")
         pass
 
     def sql(self, statement):
@@ -87,57 +92,85 @@ class Database:
 ###############
 
 
-    def addSystem(self,espml):
+    def addSystem(self, systemElement):
         """ Adds a system described in the espML to the database. If the system exists already,
         then it will be deleted and added again with the new values. This could be made more
         intelligent in the future where we update only the parts which changed.
         """
         try:
-            systemURI = espml.getId()
-            fields = espml.getField()
+            systemNetID = systemElement.getNetid()
+            fields = systemElement.getField()
             
-            sqlError = self.sql("SELECT * FROM Systems WHERE systemURI='%s'"%(systemURI,))
+            sqlError = self.sql("SELECT * FROM Systems WHERE netid='%s'"%(systemNetID,))
             
             if sqlError:
-                print sqlError
-                return (-1, sqlError)
+                logging.error("SQLError: %s"%(sqlError))
+                errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                return errorElement
 
-            if len(self.fetchAll())>=1:
-                #system uri already exists
-                print "System already exists. Delete it for recreation!"
-                sqlError = self.deleteSystem(espml)
-                if sqlError[0] < 0:
-                    print "\tcould not delete old entry!\n\t%s"%(sqlError[1],)
-                    return (-1, "Entry already exists and could not be deleted!")
-                #return (-2, "System URI already exists.")
+##             if len(self.fetchAll())>=1:
+##                 #system uri already exists
+##                 logging.warning("System with URI %s already exists. Delete it for recreation!", systemURI)
+##                 sqlError = self.deleteSystem(espml)
+##                 if sqlError[0] < 0:
+##                     print "\tcould not delete old entry!\n\t%s"%(sqlError[1],)
+##                     return (-1, "Entry already exists and could not be deleted!")
+##                 #return (-2, "System URI already exists.")
 
             ssock = StringIO.StringIO()
-            espml.export(ssock, 0)
-            
-            sqlError = self.sql("INSERT INTO Systems (systemURI, xml) VALUES ('%s', '%s')"%(systemURI, ssock.getvalue()))
+            systemElement.export(ssock, 0)
+
+            # process access and privacy control
+            accessControlId = -1
+            accessControlElement = systemElement.getAccesscontrol()
+            if accessControlElement:
+                (accessControlId, errormsg) = self.insertAccessControl(accessControlElement)
+                if accessControlId == -1:
+                    self.rollback()
+                    errorElement = espml.error(ttype="accessControlError",
+                                         message="could not insert access control: %s"%(errormsg,),
+                                         number=11)
+                    return errorElement
+
+            privacyControlId = -1
+            privacyControlElement = systemElement.getPrivacycontrol()
+            if privacyControlElement:
+                (privacyControlId, errormsg) = self.insertPrivacyControl(privacyControlElement)
+                if privacyControlId == -1:
+                    self.rollback()
+                    errorElement = espml.error(ttype="privacyControlError",
+                                         message="could not insert privacy control: %s"%(errormsg,),
+                                         number=11)
+                    return errorElement
+                    
+
+            sqlError = self.sql("INSERT INTO Systems (netid, accesscontrolid, privacycontrolid, xml) VALUES ('%s', %d, %d, '%s')"%(systemNetID, accessControlId, privacyControlId, ssock.getvalue()))
             
             if sqlError:
                 self.rollback()
-                return (-1, sqlError)
+                errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                return errorElement
             
-            systemId = self.insertId()
+            systemEspID = self.insertId()
             
             for field in fields:
                 ssock = StringIO.StringIO()
                 field.export(ssock, 0)
-                sqlError = self.sql("INSERT INTO Fields (systemId, fieldKey, xml) VALUES (" +\
-                                    "%d, '%s', '%s')"%(systemId, str(field.getId()), ssock.getvalue()))
+                sqlError = self.sql("INSERT INTO Fields (systemEspID, fieldKey, xml) VALUES (" +\
+                                    "%d, '%s', '%s')"%(systemEspID, str(field.getId()), ssock.getvalue()))
                 
                 if sqlError:
                     self.rollback()
-                    return (-1, sqlError)
+                    errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                    return errorElement
                 
                 fieldId = self.insertId()
                 
                 sqlError = self.insertLocation('Fields', fieldId, field.getLocation())
                 if sqlError[0]<0:
                     self.rollback()
-                    return (-1, sqlError)
+                    errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                    return errorElement
                 
                 for platform in field.getPlatform():
                     ssock = StringIO.StringIO()
@@ -148,13 +181,15 @@ class Database:
 
                     if sqlError:
                         self.rollback()
-                        return (-1, sqlError)
+                        errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                        return errorElement
                     platformId = self.insertId()
                     
                     sqlError = self.insertLocation('Platforms', platformId, platform.getLocation())
                     if sqlError[0]<0:
                         self.rollback()
-                        return (-1, sqlError)
+                        errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                        return errorElement
                     
                     for sensor in platform.getSensor():
                         ssock = StringIO.StringIO()
@@ -165,14 +200,16 @@ class Database:
 
                         if sqlError:
                             self.rollback()
-                            return (-1, sqlError)
+                            errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                            return errorElement
 
                         sensorId = self.insertId()
 
                         sqlError = self.insertLocation('Sensors', sensorId, sensor.getLocation())
                         if sqlError[0]<0:
                             self.rollback()
-                            return (-1, sqlError)
+                            errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                            return errorElement
 
 
             self.commit()
@@ -182,12 +219,163 @@ class Database:
             import traceback
             #traceback.print_tb(sys.exc_info()[2])
             traceback.print_exc()
-            return (-1, "Unexpected error: %s"%(sys.exc_info()[0], ))
+            logging.error("Unexpected Error: %s"%(sys.exc_info()[0]))
+            errorElement = espml.error(ttype="unexpected error", message=sys.exc_info()[0], number=1)
+            return errorElement
 
-        print "Successfully added system %s"%(systemURI,)
-        return (1, "OK")
+        logging.info("Successfully added system EspID: %s, NetID: %s"%(systemEspID, systemNetID,))
+        systemElement.setEspid(str(systemEspID))
+        return systemElement
      
-     
+
+    def addClient(self, clientElement):
+        """ Adds a client described in the espML to the database.
+
+        @return It returns the exact same element received, though with the espid
+        field populated with the new clients espid.
+        """
+        try:
+            clientNetID = clientElement.getNetid()
+            clientDescription = clientElement.getDescription()
+            clientType = clientElement.getType()
+            
+            ssock = StringIO.StringIO()
+            clientElement.export(ssock, 0)
+
+            sqlError = self.sql("INSERT INTO Clients (netid, description, type, xml) VALUES ('%s', '%s', '%s', '%s')"%(clientNetID, clientDescription, clientType, ssock.getvalue()))
+            
+            if sqlError:
+                self.rollback()
+                errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                return errorElement
+
+            clientEspID = self.insertId()
+            sqlError = self.insertLocation('Clients', clientEspID, clientElement.getLocation())
+            if sqlError[0]<0:
+                self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
+                errorElement = espml.error(ttype="sqlerror", message=sqlError[1], number=10)
+                return errorElement
+
+            self.commit()
+            
+        except Exception:
+            #some python error occured. rollback the db
+            self.rollback()
+            import traceback
+            #traceback.print_tb(sys.exc_info()[2])
+            traceback.print_exc()
+            logging.error("Unexpected Error: %s"%(sys.exc_info()[0]))
+            errorElement = espml.error(ttype="unexpected error", message=sys.exc_info()[0], number=1)
+            return errorElement
+
+        logging.info("Successfully added client EspID: %s, NetID: %s"%(clientEspID, clientNetID,))
+
+        clientElement.setEspid(str(clientEspID))
+        
+        return clientElement
+        
+    def addMediator(self, mediatorElement):
+        """ Adds a mediator described in the espML to the database.
+
+        @return It returns the exact same element received, though with the espid
+        field populated with the new mediators espid.
+        """
+        try:
+            mediatorNetID = mediatorElement.getNetid()
+            mediatorDescription = mediatorElement.getDescription()
+            mediatorType = mediatorElement.getType()
+            
+            ssock = StringIO.StringIO()
+            mediatorElement.export(ssock, 0)
+
+            sqlError = self.sql("INSERT INTO Mediators (netid, description, type, xml) VALUES ('%s', '%s', '%s', '%s')"%(mediatorNetID, mediatorDescription, mediatorType, ssock.getvalue()))
+            
+            if sqlError:
+                self.rollback()
+                errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                return errorElement
+
+            mediatorEspID = self.insertId()
+            sqlError = self.insertLocation('Mediators', mediatorEspID, mediatorElement.getLocation())
+            if sqlError[0]<0:
+                self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
+                errorElement = espml.error(ttype="sqlerror", message=sqlError[1], number=10)
+                return errorElement
+
+
+            for systemElement in mediatorElement.getSystem():
+                ssock = StringIO.StringIO()
+                systemElement.export(ssock, 0)
+
+                systemEspID = systemElement.getEspid()
+                systemDescription = systemElement.getDescription()
+
+                sqlError = self.sql("INSERT INTO MediatorSystems (mediatorEspId, systemEspId, description, xml) VALUES (%d, %d, '%s', '%s')"%(int(mediatorEspID), int(systemEspID), systemDescription, ssock.getvalue()))
+            
+                if sqlError:
+                    self.rollback()
+                    errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                    return errorElement
+                
+            self.commit()
+            
+        except Exception:
+            #some python error occured. rollback the db
+            self.rollback()
+            import traceback
+            #traceback.print_tb(sys.exc_info()[2])
+            traceback.print_exc()
+            logging.error("Unexpected Error: %s"%(sys.exc_info()[0]))
+            errorElement = espml.error(ttype="unexpected error", message=sys.exc_info()[0], number=1)
+            return errorElement
+
+        logging.info("Successfully added mediator EspID: %s, NetID: %s"%(mediatorEspID, mediatorNetID,))
+
+        mediatorElement.setEspid(str(mediatorEspID))
+        
+        return mediatorElement
+
+
+    def insertAccessControl(self, accessControlElement):
+        """ Adds an access control element into the database.
+
+        @return Returns a tuple consisting of the unique identifier for this access
+        control element or -1 if it failed, and a string which describes the error, in case it failed.
+        """
+
+        ssock = StringIO.StringIO()
+        accessControlElement.export(ssock, 0)
+        
+        sqlError = self.sql("INSERT INTO AccessControl (xml) VALUES (" +\
+                            "'%s')"%(ssock.getvalue(),))
+        
+        if sqlError:
+            self.rollback()
+            return (-1, sqlError)
+
+        return (self.insertId(), "")
+    
+    def insertPrivacyControl(self, privacyControlElement):
+        """ Adds a privacy control element into the database.
+
+        @return Returns a tuple consisting of the unique identifier for this privacy
+        control element or -1 if it failed, and a string which describes the error, in case it failed.
+        """
+
+        ssock = StringIO.StringIO()
+        accessControlElement.export(ssock, 0)
+        
+        sqlError = self.sql("INSERT INTO PrivacyControl (xml) VALUES (" +\
+                            "'%s')"%(ssock.getvalue(),))
+        
+        if sqlError:
+            self.rollback()
+            return (-1, sqlError)
+
+        return (self.insertId(), "")
+    
     def deleteSystem(self, espml):
         """ Delete the system described in the espml. This takes care of all depenences.
 
@@ -198,7 +386,7 @@ class Database:
         sqlError = self.sql("SELECT * FROM Systems WHERE systemURI='%s'"%(systemURI,))
         
         if sqlError:
-            print sqlError
+            logging.error("SQLError: %s"%(sqlError))
             return (-1, sqlError)
 
         sqlResults = self.fetchAll()
@@ -214,7 +402,7 @@ class Database:
         sqlError = self.sql("SELECT * FROM Fields WHERE systemId=%d"%(systemDbId,))
 
         if sqlError:
-            print sqlError
+            logging.error("SQLError: %s"%(sqlError))
             return (-1, sqlError)
        
         sqlResults = self.fetchAll()
@@ -336,6 +524,7 @@ class Database:
 
     def insertLocation(self, referenceTable, referenceId, location):
         """ Insert a location which belongs to the entry in referenceTable(referenceId).
+        Note that insertLocation does not perform a commit to the database.
         """
         ssock = StringIO.StringIO()
         location.export(ssock, 0)
@@ -434,8 +623,10 @@ class Database:
         sqlError = self.sql("SELECT sys.systemURI, f.id, pl.id, l.id, s.id, p.id, l.referenceId, p.latitude, p.longitude, pl.xml FROM Systems as sys, Fields as f, Platforms as pl, Sensors as s, Locations as l, Points as p WHERE l.referenceTable='Platforms' AND l.id=p.locationId AND pl.id=l.referenceId AND s.platformId=pl.id AND pl.fieldId=f.id AND f.systemId=sys.Id AND p.latitude>=%f AND p.latitude<=%f AND p.longitude>=%f AND p.longitude<=%f ORDER BY f.id"%(min(latList), max(latList), min(longList), max(longList)))
 
         if sqlError:
-            print "ERROR_%s"%(sqlError,)
-            return "ERROR_%s"%(sqlError,)
+            logging.error("SQLError: %s"%(sqlError))
+            errorElement = error(ttype="sqlerror", message=sqlError, number=10)
+            return errorElement
+
 
         sqlResults = self.fetchAll()
 
@@ -473,8 +664,10 @@ class Database:
                 sqlError = self.sql("SELECT xml FROM Fields WHERE id=%d"%(point[1]))
                 
                 if sqlError:
-                    print "ERROR_%s"%(sqlError,)
-                    return "ERROR_%s"%(sqlError,)
+                    logging.error("SQLError: %s"%(sqlError))
+                    errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                    return errorElement
+
                 #remove the platforms from the field XML since we want to add onlythe ones which are inside the polygon
                 fieldXml = self.filterElements(self.fetchOne()[0], 'platform')
                 activeSystemURI = point[0]
@@ -521,13 +714,42 @@ class Database:
         
 
 def createDb():
-    DBOpen()
+    import logging
+    DBOpen(logging)
     db = cachedDb()
     
     sqlError = db.sql('''
     CREATE TABLE Systems (
-	id INT default NULL auto_increment,
-        systemURI VARCHAR(1024) NOT NULL,
+	espid INT default NULL auto_increment,
+        netid VARCHAR(1024) NOT NULL,
+        accesscontrolid INT default -1 REFERENCES AccessControl(id),
+        privacycontrolid INT default -1 REFERENCES PrivacyControl(id),
+	description LONGTEXT,
+        xml LONGTEXT NOT NULL,
+        PRIMARY KEY (espid)
+    ) ENGINE=InnoDB
+    ''')
+    if sqlError:
+        print sqlError
+
+    sqlError = db.sql('''
+    CREATE TABLE Mediators (
+	espid INT default NULL auto_increment,
+        netid VARCHAR(1024) NOT NULL,
+	description LONGTEXT,
+        type VARCHAR(1024) NOT NULL,
+        xml LONGTEXT NOT NULL,
+        PRIMARY KEY (espid)
+    ) ENGINE=InnoDB
+    ''')
+    if sqlError:
+        print sqlError
+
+    sqlError = db.sql('''
+    CREATE TABLE MediatorSystems (
+        id INT default NULL auto_increment,
+        mediatorEspId INT REFERENCES Mediators(espid),
+        systemEspId INT REFERENCES Systems(espid),
 	description LONGTEXT,
         xml LONGTEXT NOT NULL,
         PRIMARY KEY (id)
@@ -537,10 +759,23 @@ def createDb():
         print sqlError
 
     sqlError = db.sql('''
+    CREATE TABLE Clients (
+        espid INT default NULL auto_increment,
+        netid VARCHAR(1024) NOT NULL,
+	description LONGTEXT,
+        type VARCHAR(1024) NOT NULL,
+       xml LONGTEXT NOT NULL,
+        PRIMARY KEY (espid)
+    ) ENGINE=InnoDB
+    ''')
+    if sqlError:
+        print sqlError
+
+    sqlError = db.sql('''
     CREATE TABLE Fields (
 	id INT default NULL auto_increment,
-        systemId INT REFERENCES Systems(id) ON DELETE CASCADE,
-fieldKey VARCHAR(255) NOT NULL,
+        systemEspID INT REFERENCES Systems(espid) ON DELETE CASCADE,
+        fieldKey VARCHAR(255) NOT NULL,
 	xml LONGTEXT NOT NULL,
         PRIMARY KEY (id)
     ) ENGINE=InnoDB
@@ -551,7 +786,7 @@ fieldKey VARCHAR(255) NOT NULL,
     sqlError = db.sql('''
     CREATE TABLE Platforms (
 	id INT default NULL auto_increment,
-        fieldId INT REFERENCES Fields(id) ON DELETE CASCADE,
+        fieldId INT REFERENCES Fields(espid) ON DELETE CASCADE,
 	platformKey VARCHAR(255) NOT NULL,
 	xml LONGTEXT,
         PRIMARY KEY (id)
@@ -575,7 +810,7 @@ fieldKey VARCHAR(255) NOT NULL,
     sqlError = db.sql('''
     CREATE TABLE Locations (
 	id INT default NULL auto_increment,
-        referenceTable ENUM('Fields','Platforms','Sensors') NOT NULL,
+        referenceTable ENUM('Fields','Platforms','Sensors', 'Mediators', 'Clients') NOT NULL,
         referenceId INT NOT NULL,
 	xml LONGTEXT NOT NULL,
         PRIMARY KEY (id)
@@ -604,6 +839,28 @@ fieldKey VARCHAR(255) NOT NULL,
         latitude FLOAT NOT NULL,
         longitude FLOAT NOT NULL,
         altitude FLOAT NOT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB
+    ''')
+    if sqlError:
+        print sqlError
+
+
+    sqlError = db.sql('''
+    CREATE TABLE AccessControl (
+        id INT default NULL auto_increment,
+        xml LONGTEXT NOT NULL,
+        PRIMARY KEY (id)
+    ) ENGINE=InnoDB
+    ''')
+    if sqlError:
+        print sqlError
+
+
+    sqlError = db.sql('''
+    CREATE TABLE PrivacyControl (
+        id INT default NULL auto_increment,
+        xml LONGTEXT NOT NULL,
         PRIMARY KEY (id)
     ) ENGINE=InnoDB
     ''')
