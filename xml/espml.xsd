@@ -58,9 +58,9 @@
                     <xs:element name="error" minOccurs="1" maxOccurs="unbounded">
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:element ref="type" minOccurs="1" maxOccurs="1" type="xs:string" />
-                                <xs:element ref="message" minOccurs="1" maxOccurs="1" type="xs:string" />
-                                <xs:element ref="number" minOccurs="1" maxOccurs="1" type="xs:integer" />
+                                <xs:element name="type" minOccurs="1" maxOccurs="1" type="xs:string" />
+                                <xs:element name="message" minOccurs="1" maxOccurs="1" type="xs:string" />
+                                <xs:element name="number" minOccurs="1" maxOccurs="1" type="xs:integer" />
                             </xs:sequence>
                         </xs:complexType>
                     </xs:element>

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Thu Jul 13 11:53:40 2006 by generateDS.py.
+# Generated Thu Jul 13 17:40:06 2006 by generateDS.py.
 #
 
 import sys
@@ -814,22 +814,22 @@ class rule:
 
 class error:
     subclass = None
-    def __init__(self, xs_string='', xs_string='', xs_integer=-1):
-        self.xs_string = xs_string
-        self.xs_string = xs_string
-        self.xs_integer = xs_integer
+    def __init__(self, ttype='', message='', number=-1):
+        self.ttype = ttype
+        self.message = message
+        self.number = number
     def factory(*args_, **kwargs_):
         if error.subclass:
             return error.subclass(*args_, **kwargs_)
         else:
             return error(*args_, **kwargs_)
     factory = staticmethod(factory)
-    def getXs_string(self): return self.xs_string
-    def setXs_string(self, xs_string): self.xs_string = xs_string
-    def getXs_string(self): return self.xs_string
-    def setXs_string(self, xs_string): self.xs_string = xs_string
-    def getXs_integer(self): return self.xs_integer
-    def setXs_integer(self, xs_integer): self.xs_integer = xs_integer
+    def getType(self): return self.ttype
+    def setType(self, ttype): self.ttype = ttype
+    def getMessage(self): return self.message
+    def setMessage(self, message): self.message = message
+    def getNumber(self): return self.number
+    def setNumber(self, number): self.number = number
     def export(self, outfile, level, name_='error'):
         showIndent(outfile, level)
         outfile.write('<%s>\n' % name_)
@@ -840,11 +840,11 @@ class error:
         pass
     def exportChildren(self, outfile, level, name_='error'):
         showIndent(outfile, level)
-        outfile.write('<xs:string>%s</xs:string>\n' % quote_xml(self.getXs_string()))
+        outfile.write('<type>%s</type>\n' % quote_xml(self.getType()))
         showIndent(outfile, level)
-        outfile.write('<xs:string>%s</xs:string>\n' % quote_xml(self.getXs_string()))
+        outfile.write('<message>%s</message>\n' % quote_xml(self.getMessage()))
         showIndent(outfile, level)
-        outfile.write('<xs:integer>%d</xs:integer>\n' % self.getXs_integer())
+        outfile.write('<number>%d</number>\n' % self.getNumber())
     def exportLiteral(self, outfile, level, name_='error'):
         level += 1
         self.exportLiteralAttributes(outfile, level, name_)
@@ -853,11 +853,11 @@ class error:
         pass
     def exportLiteralChildren(self, outfile, level, name_):
         showIndent(outfile, level)
-        outfile.write('xs_string=%s,\n' % quote_python(self.getXs_string()))
+        outfile.write('ttype=%s,\n' % quote_python(self.getType()))
         showIndent(outfile, level)
-        outfile.write('xs_string=%s,\n' % quote_python(self.getXs_string()))
+        outfile.write('message=%s,\n' % quote_python(self.getMessage()))
         showIndent(outfile, level)
-        outfile.write('xs_integer=%d,\n' % self.getXs_integer())
+        outfile.write('number=%d,\n' % self.getNumber())
     def build(self, node_):
         attrs = node_.attributes
         self.buildAttributes(attrs)
@@ -868,26 +868,26 @@ class error:
         pass
     def buildChildren(self, child_, nodeName_):
         if child_.nodeType == Node.ELEMENT_NODE and \
-            nodeName_ == 'xs:string':
-            xs_string_ = ''
+            nodeName_ == 'type':
+            type_ = ''
             for text__content_ in child_.childNodes:
-                xs_string_ += text__content_.nodeValue
-            self.xs_string = xs_string_
+                type_ += text__content_.nodeValue
+            self.ttype = type_
         elif child_.nodeType == Node.ELEMENT_NODE and \
-            nodeName_ == 'xs:string':
-            xs_string_ = ''
+            nodeName_ == 'message':
+            message_ = ''
             for text__content_ in child_.childNodes:
-                xs_string_ += text__content_.nodeValue
-            self.xs_string = xs_string_
+                message_ += text__content_.nodeValue
+            self.message = message_
         elif child_.nodeType == Node.ELEMENT_NODE and \
-            nodeName_ == 'xs:integer':
+            nodeName_ == 'number':
             if child_.firstChild:
                 sval_ = child_.firstChild.nodeValue
                 try:
                     ival_ = int(sval_)
                 except ValueError:
                     raise ValueError('requires integer -- %s' % child_.toxml())
-                self.xs_integer = ival_
+                self.number = ival_
 # end class error
 
 
@@ -3389,12 +3389,12 @@ class SaxEspHandler(handler.ContentHandler):
             stackObj = SaxStackElement('error', obj)
             self.stack.append(stackObj)
             done = 1
-        elif name == 'xs:string':
-            stackObj = SaxStackElement('xs_string', None)
+        elif name == 'message':
+            stackObj = SaxStackElement('message', None)
             self.stack.append(stackObj)
             done = 1
-        elif name == 'xs:integer':
-            stackObj = SaxStackElement('xs_integer', None)
+        elif name == 'number':
+            stackObj = SaxStackElement('number', None)
             self.stack.append(stackObj)
             done = 1
         elif name == 'netid':
@@ -3672,23 +3672,23 @@ class SaxEspHandler(handler.ContentHandler):
                 self.stack[-2].obj.addError(self.stack[-1].obj)
                 self.stack.pop()
                 done = 1
-        elif name == 'xs:string':
+        elif name == 'message':
             if len(self.stack) >= 2:
                 content = self.stack[-1].content
-                self.stack[-2].obj.setXs_string(content)
+                self.stack[-2].obj.setMessage(content)
                 self.stack.pop()
                 done = 1
-        elif name == 'xs:integer':
+        elif name == 'number':
             if len(self.stack) >= 2:
                 content = self.stack[-1].content
                 if content:
                     try:
                         content = int(content)
                     except:
-                        self.reportError('"xs:integer" must be integer -- content: %s' % content)
+                        self.reportError('"number" must be integer -- content: %s' % content)
                 else:
                     content = -1
-                self.stack[-2].obj.setXs_integer(content)
+                self.stack[-2].obj.setNumber(content)
                 self.stack.pop()
                 done = 1
         elif name == 'netid':
