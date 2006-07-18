@@ -9,6 +9,16 @@
      <pos>36.2,24.2,0.0</pos>
     </point>
    </location>
+   <accesscontrol>
+    <rule>
+     <description></description>
+    </rule>
+   </accesscontrol>
+   
+   <privacycontrol>
+  <rule></rule>
+ </privacycontrol>
+<description></description>
    <field>
     <id>1</id>
     <location>

@@ -331,8 +331,7 @@
                 <xs:element name="system" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element ref="netid"/>
-                            <xs:element ref="espid" minOccurs="0" maxOccurs="1"/>
+                            <xs:element ref="espid" />
                             <xs:element ref="description"/>
                         </xs:sequence>
                     </xs:complexType>
