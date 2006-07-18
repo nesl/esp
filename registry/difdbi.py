@@ -425,7 +425,7 @@ class Database:
         """
 
         ssock = StringIO.StringIO()
-        accessControlElement.export(ssock, 0)
+        privacyControlElement.export(ssock, 0)
         
         sqlError = self.sql("INSERT INTO PrivacyControl (xml) VALUES (" +\
                             "'%s')"%(ssock.getvalue(),))
@@ -680,7 +680,7 @@ class Database:
         longList = [e[1] for e in polygonList]
 
         #get all the lines and produce the XML for the fields in the systems.
-        sqlError = self.sql("SELECT sys.systemURI, f.id, pl.id, l.id, s.id, p.id, l.referenceId, p.latitude, p.longitude, pl.xml FROM Systems as sys, Fields as f, Platforms as pl, Sensors as s, Locations as l, Points as p WHERE l.referenceTable='Platforms' AND l.id=p.locationId AND pl.id=l.referenceId AND s.platformId=pl.id AND pl.fieldId=f.id AND f.systemId=sys.Id AND p.latitude>=%f AND p.latitude<=%f AND p.longitude>=%f AND p.longitude<=%f ORDER BY f.id"%(min(latList), max(latList), min(longList), max(longList)))
+        sqlError = self.sql("SELECT sys.netid, f.id, pl.id, l.id, s.id, p.id, l.referenceId, p.latitude, p.longitude, pl.xml FROM Systems as sys, Fields as f, Platforms as pl, Sensors as s, Locations as l, Points as p WHERE l.referenceTable='Platforms' AND l.id=p.locationId AND pl.id=l.referenceId AND s.platformId=pl.id AND pl.fieldId=f.id AND f.systemEspId=sys.espid AND p.latitude>=%f AND p.latitude<=%f AND p.longitude>=%f AND p.longitude<=%f ORDER BY f.id"%(min(latList), max(latList), min(longList), max(longList)))
 
         if sqlError:
             logging.error("SQLError: %s"%(sqlError))
@@ -745,10 +745,15 @@ class Database:
             systemHits.append(systemXml)
                                 
         queryXml = """<?xml version="1.0" encoding="UTF-8"?>
-<query xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<esp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:noNamespaceSchemaLocation="espml.xsd">
+  <response type="systems">
 """ + '\n'.join(systemHits) + """
-</query>"""
+  </response>
+  <response type="mediator">
+
+  </response>
+</esp>"""
 
         doc = xml.dom.minidom.parseString(queryXml)
         return doc.toxml()
