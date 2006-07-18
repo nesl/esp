@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 #
-# Generated Fri Jul 14 14:05:15 2006 by generateDS.py.
+# Generated Tue Jul 18 10:08:09 2006 by generateDS.py.
 #
 
 import sys
@@ -920,9 +920,10 @@ class rule:
 
 class system:
     subclass = None
-    def __init__(self, netid='', espid='', accesscontrol=None, privacycontrol=None, description='', field=None):
+    def __init__(self, netid='', espid='', location=None, accesscontrol=None, privacycontrol=None, description='', field=None):
         self.netid = netid
         self.espid = espid
+        self.location = location
         self.accesscontrol = accesscontrol
         self.privacycontrol = privacycontrol
         self.description = description
@@ -940,6 +941,8 @@ class system:
     def setNetid(self, netid): self.netid = netid
     def getEspid(self): return self.espid
     def setEspid(self, espid): self.espid = espid
+    def getLocation(self): return self.location
+    def setLocation(self, location): self.location = location
     def getAccesscontrol(self): return self.accesscontrol
     def setAccesscontrol(self, accesscontrol): self.accesscontrol = accesscontrol
     def getPrivacycontrol(self): return self.privacycontrol
@@ -963,6 +966,8 @@ class system:
         outfile.write('<netid>%s</netid>\n' % quote_xml(self.getNetid()))
         showIndent(outfile, level)
         outfile.write('<espid>%s</espid>\n' % quote_xml(self.getEspid()))
+        if self.location:
+            self.location.export(outfile, level)
         if self.accesscontrol:
             self.accesscontrol.export(outfile, level)
         if self.privacycontrol:
@@ -982,6 +987,12 @@ class system:
         outfile.write('netid=%s,\n' % quote_python(self.getNetid()))
         showIndent(outfile, level)
         outfile.write('espid=%s,\n' % quote_python(self.getEspid()))
+        if self.location:
+            showIndent(outfile, level)
+            outfile.write('location=location(\n')
+            self.location.exportLiteral(outfile, level)
+            showIndent(outfile, level)
+            outfile.write('),\n')
         if self.accesscontrol:
             showIndent(outfile, level)
             outfile.write('accesscontrol=accesscontrol(\n')
@@ -1029,6 +1040,11 @@ class system:
             for text__content_ in child_.childNodes:
                 espid_ += text__content_.nodeValue
             self.espid = espid_
+        elif child_.nodeType == Node.ELEMENT_NODE and \
+            nodeName_ == 'location':
+            obj_ = location.factory()
+            obj_.build(child_)
+            self.setLocation(obj_)
         elif child_.nodeType == Node.ELEMENT_NODE and \
             nodeName_ == 'accesscontrol':
             obj_ = accesscontrol.factory()
