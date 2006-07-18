@@ -4,6 +4,11 @@
  <register>
   <system>
    <netid>http://www.schmidi.com</netid>
+   <location>
+    <point>
+     <pos>36.2,24.2,0.0</pos>
+    </point>
+   </location>
    <field>
     <id>1</id>
     <location>

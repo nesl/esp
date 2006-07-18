@@ -48,6 +48,7 @@ class Database:
         except DatabaseError, msg:
             return "ERROR: Could not get cursor\nMessage: %s"%(statement, msg)
         try:
+            #logging.info(statement)
             self.cursor.execute(statement)
         except DatabaseError, msg:
             return "ERROR: Could not execute statement '%s'\nMessage: %s"%(statement, msg)
@@ -148,11 +149,20 @@ class Database:
             
             if sqlError:
                 self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
                 errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                 return errorElement
             
             systemEspID = self.insertId()
             
+            sqlError = self.insertLocation('Systems', systemEspID, systemElement.getLocation())
+            if sqlError[0]<0:
+                self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
+                errorElement = espml.error(ttype="sqlerror", message=sqlError[1], number=10)
+                return errorElement
+
+
             for field in fields:
                 ssock = StringIO.StringIO()
                 field.export(ssock, 0)
@@ -161,6 +171,7 @@ class Database:
                 
                 if sqlError:
                     self.rollback()
+                    logging.error("SQLError: %s"%(sqlError[1]))
                     errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                     return errorElement
                 
@@ -169,6 +180,7 @@ class Database:
                 sqlError = self.insertLocation('Fields', fieldId, field.getLocation())
                 if sqlError[0]<0:
                     self.rollback()
+                    logging.error("SQLError: %s"%(sqlError[1]))
                     errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                     return errorElement
                 
@@ -181,6 +193,7 @@ class Database:
 
                     if sqlError:
                         self.rollback()
+                        logging.error("SQLError: %s"%(sqlError[1]))
                         errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                         return errorElement
                     platformId = self.insertId()
@@ -188,6 +201,7 @@ class Database:
                     sqlError = self.insertLocation('Platforms', platformId, platform.getLocation())
                     if sqlError[0]<0:
                         self.rollback()
+                        logging.error("SQLError: %s"%(sqlError[1]))
                         errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                         return errorElement
                     
@@ -200,6 +214,7 @@ class Database:
 
                         if sqlError:
                             self.rollback()
+                            logging.error("SQLError: %s"%(sqlError[1]))
                             errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                             return errorElement
 
@@ -208,9 +223,51 @@ class Database:
                         sqlError = self.insertLocation('Sensors', sensorId, sensor.getLocation())
                         if sqlError[0]<0:
                             self.rollback()
+                            logging.error("SQLError: %s"%(sqlError[1]))
                             errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                             return errorElement
 
+
+            #associate a mediator. for now, we just choose the nearest mediator we can find.
+            systemLocationElement = systemElement.getLocation()
+            systemPoint = systemLocationElement.getPoint()
+            if not systemPoint:
+                self.rollback()
+                errorElement = espml.error(ttype="locationerror", message="The system location needs to be a point!", number=1)
+            pos = systemPoint[0].getPos().split(',')
+            systemLat = float(pos[0])
+            systemLong = float(pos[1])
+
+            sqlError = self.sql("SELECT l.referenceId, ABS(p.latitude-%f)+ABS(p.longitude-%f) as dist \
+            FROM Points as p, Locations as l, Mediators as m \
+            WHERE p.locationId=l.id AND l.referenceId=m.espid ORDER BY dist LIMIT 1"%(systemLat, systemLong))
+
+            if sqlError:
+                self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
+                errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                return errorElement
+
+            sqlResults = self.fetchAll()
+
+            if not sqlResults:
+                self.rollback()
+                logging.error("No Mediator Error")
+                errorElement = espml.error(ttype="mediatorerror", message="Sorry, we couldn't find a mediator for you. Please try again later.", number=1)
+                return errorElement
+                
+
+            mediatorEspID = sqlResults[0][0]
+
+            sqlError = self.sql("INSERT INTO MediatorSystems (mediatorEspId, systemEspId, description, xml) VALUES (%d, %d, '', '<system><espid>%d</espid><description /></system>')"%(mediatorEspID, systemEspID, systemEspID))
+
+            if sqlError:
+                self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
+                errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
+                return errorElement
+
+            logging.info("Added mediator %s to system %s"%(mediatorEspID, systemEspID))
 
             self.commit()
         except Exception:
@@ -246,6 +303,7 @@ class Database:
             
             if sqlError:
                 self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
                 errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                 return errorElement
 
@@ -293,6 +351,7 @@ class Database:
             
             if sqlError:
                 self.rollback()
+                logging.error("SQLError: %s"%(sqlError[1]))
                 errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                 return errorElement
 
@@ -316,6 +375,7 @@ class Database:
             
                 if sqlError:
                     self.rollback()
+                    logging.error("SQLError: %s"%(sqlError[1]))
                     errorElement = espml.error(ttype="sqlerror", message=sqlError, number=10)
                     return errorElement
                 
@@ -810,7 +870,7 @@ def createDb():
     sqlError = db.sql('''
     CREATE TABLE Locations (
 	id INT default NULL auto_increment,
-        referenceTable ENUM('Fields','Platforms','Sensors', 'Mediators', 'Clients') NOT NULL,
+        referenceTable ENUM('Systems', 'Fields','Platforms','Sensors', 'Mediators', 'Clients') NOT NULL,
         referenceId INT NOT NULL,
 	xml LONGTEXT NOT NULL,
         PRIMARY KEY (id)

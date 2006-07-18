@@ -6,16 +6,11 @@
             <netid>localhost:20000</netid>
             <location>
                 <point>
-                    <pos>-118, 36, 0 </pos>
+                    <pos>-118.4, 36, 0 </pos>
                 </point>                
             </location>
             <description></description>
             <type></type>
-            <system>
-                <espid>123</espid>
-                <description></description>
-            </system>
-            
         </mediator>
         
         <security>
