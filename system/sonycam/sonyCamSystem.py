@@ -2,11 +2,12 @@
 
 import os, sys, md5, thread, copy
 import SOAPpy
-import SocketServer
+import SocketServer, socket, StringIO
 import BaseHTTPServer
 
 sys.path.append('..')
 sys.path.append('../../xml')
+import espml
 from system import System
 
 #stores the requests received from SOAP calls which will need a URI call to be handleled
@@ -17,7 +18,9 @@ class Basestation(System, SocketServer.TCPServer):
     def __init__(self):
         global _requests
 
-        self.camip = "128.97.93.245"
+        self.camip = "sonycam.msgroup.ucla.edu"
+        self.ourip = socket.gethostbyaddr(socket.gethostname())[-1][0]
+        self.port = 9218
         self.camtool = "./camctrl"
         self.pan=0
         self.tilt=0
@@ -25,7 +28,13 @@ class Basestation(System, SocketServer.TCPServer):
         self.setCam()
         
         print "Start parsing xml file"
-        System.__init__(self, 9281, "http://128.97.93.154:8080/", "sonyCamSystem.xml")
+        espmlFile = 'sonyCamSystem.xml'
+        espmlDocObject = espml.parse(espmlFile)
+        systemElement = espmlDocObject.getSystem()
+        systemElement.setId('http://'+str(self.ourip)+':'+self.port)
+        espmlDocObject.export(file(espmlFile, 'w'), 0)
+        
+        System.__init__(self, self.port, "http://128.97.93.5:1718/", "sonyCamSystem.xml")
         print "Registered system"
         
 
